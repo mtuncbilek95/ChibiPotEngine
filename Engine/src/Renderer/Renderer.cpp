@@ -68,10 +68,10 @@ bool Engine::Renderer::CreateDeviceContext(DriverTypes typeValue)
 		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(Warning, "Failed to create the D3D11 Device.\n");
+		CONSOLE_LOG(Warning, "Failed to create the D3D11 Device.");
 		return false;
 	}
-	CONSOLE_LOG(Success, "D3D11 Device has been successfuly created.\n");
+	CONSOLE_LOG(Success, "D3D11 Device has been successfully created.");
 
 	return true;
 }
@@ -124,27 +124,45 @@ bool Engine::Renderer::CreateSwapChain(HWND handle)
 		return false;
 	}
 
-	return false;
+	ComPtr<IDXGIFactory> dxgiFactory;
+
+	hr = dxgiAdapter.Get()->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
+	
+	if (FAILED(hr)) {
+		CONSOLE_LOG(Error, "Failed to get the DXGI Factory.");
+		return false;
+	}
+
+	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &SwapChainDesc, m_SwapChain.GetAddressOf());
+	
+	if (FAILED(hr)) {
+		CONSOLE_LOG(Error, "Failed to create Swapchain.");
+		return false;
+	}
+
+	CONSOLE_LOG(Success, "Swapchain has been successfully created.");
+
+	return true;
 }
 
 bool Engine::Renderer::CreateRenderTargetView()
 {
-	return false;
+	return true;
 }
 
 bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob>& Blob)
 {
-	return false;
+	return true;
 }
 
 bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob>& Blob)
 {
-	return false;
+	return true;
 }
 
 bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
-	return false;
+	return true;
 }
 
 void Engine::Renderer::UpdateFrame()
@@ -153,6 +171,6 @@ void Engine::Renderer::UpdateFrame()
 
 void Engine::Renderer::ClearFrame()
 {
-	const float clearColor[] = { 0.084f, 0.106f, 0.122, 1.0f };
+	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
 }

@@ -1,5 +1,4 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#pragma once
 
 #include "DriverTypes.h"
 #include <d3d11.h>
@@ -40,5 +39,3 @@ namespace Engine {
 		D3D11_VIEWPORT Viewport;
 	};
 }
-
-#endif // RENDERER_H

@@ -1,6 +1,9 @@
 #include "Window.h"
+
 #include <Resources/Resource.h>
 #include <Logger/Logger.h>
+
+
 
 Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr), bIsRunning(false)
 {
@@ -34,33 +37,38 @@ void Engine::Window::Initialize()
 
 	AdjustWindowRect(&windowSize, windowStyle, false);
 
-	m_windowHandle = CreateWindowEx(0, m_className, m_windowName, windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
+	m_windowHandle = CreateWindowEx(0, m_className, m_windowName.c_str(), windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
 		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
+
 	if (m_windowHandle != nullptr) {
-		CONSOLE_LOG(Success, "Window has been successfuly created");
+		CONSOLE_LOG(Success, "Window has been successfully created.");
 		ShowWindow(m_windowHandle, SW_SHOW);
 	}
-	else {
-		CONSOLE_LOG(Warning, "Window has been successfuly created");
-	}
 
-	bIsRunning = true;
-
-	RendererDX->Initialize(m_windowHandle);
+	bIsRunning = RendererDX->Initialize(m_windowHandle);
 }
 
 void Engine::Window::Run()
 {
 	MSG msg{};
 
-	while (PeekMessage(&msg, m_windowHandle, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-	}
+	m_windowTimer.Reset();
 
-	RendererDX->UpdateFrame();
-	RendererDX->ClearFrame();
+	while (bIsRunning)
+	{
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			
+
+			m_windowTimer.Tick();
+			CalculateFrameRate();
+		}
+	}
 }
 
 void Engine::Window::Exit()
@@ -94,8 +102,15 @@ void Engine::Window::CalculateFrameRate()
 
 	frameCount++;
 
-	if ((timeElapsed) >= 1.0f) {
+	if ((m_windowTimer.TotalTime() - timeElapsed) >= 1.0f) {
 		float fps = (float)frameCount;
 		float mspf = 1000.f / fps;
+		string fpsStr = std::to_string(static_cast<int>(fps));
+
+		string windowText = m_windowName + " FPS: " + fpsStr;
+		SetWindowText(m_windowHandle, windowText.c_str());
+
+		frameCount = 0;
+		timeElapsed += 1.0f;
 	}
 }

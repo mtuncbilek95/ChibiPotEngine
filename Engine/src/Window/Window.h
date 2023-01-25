@@ -1,11 +1,14 @@
-#ifndef WINDOW_H
-#define WINDOW_H
+#pragma once
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#include <string>
+
 #include <Renderer/Renderer.h>
 #include <GameTimer/GameTimer.h>
+
+using std::string;
 
 namespace Engine {
 
@@ -33,11 +36,8 @@ namespace Engine {
 		UINT m_width, m_height;
 
 		const char* m_className = "WindowClass";
-		const char* m_windowName = "LeafPotEngine";
+		string m_windowName = "ChibiPot Engine";
 
 		GameTimer m_windowTimer;
 	};
-
 }
-
-#endif // __WINDOW_H__
