@@ -17,18 +17,18 @@ namespace Engine {
 		~Renderer();
 
 		bool Initialize(HWND handle);
+		void UpdateFrame();
+
+	protected:
 		bool CreateDeviceContext(DriverTypes typeValue = DriverTypes::Hardware);
 		bool CreateSwapChain(HWND handle);
 		bool CreateRenderTargetView();
 		bool CreatePixelShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateVertexShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateInputLayout(ComPtr<ID3DBlob>& Blob);
-
-		void UpdateFrame();
 		void ClearFrame();
 
 	private:
-
 		ComPtr<ID3D11Device> m_Device;
 		ComPtr<IDXGISwapChain> m_SwapChain;
 		ComPtr<ID3D11DeviceContext> m_Context;

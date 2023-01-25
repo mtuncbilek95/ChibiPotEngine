@@ -127,14 +127,14 @@ bool Engine::Renderer::CreateSwapChain(HWND handle)
 	ComPtr<IDXGIFactory> dxgiFactory;
 
 	hr = dxgiAdapter.Get()->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
-	
+
 	if (FAILED(hr)) {
 		CONSOLE_LOG(Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
 
 	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &SwapChainDesc, m_SwapChain.GetAddressOf());
-	
+
 	if (FAILED(hr)) {
 		CONSOLE_LOG(Error, "Failed to create Swapchain.");
 		return false;
@@ -147,6 +147,23 @@ bool Engine::Renderer::CreateSwapChain(HWND handle)
 
 bool Engine::Renderer::CreateRenderTargetView()
 {
+	ComPtr<ID3D11Texture2D> backBuffer;
+
+	D3D11_RENDER_TARGET_VIEW_DESC TargetViewDesc{};
+
+	HRESULT hr = m_SwapChain.Get()->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	if (FAILED(hr)) {
+		CONSOLE_LOG(Error, "Failed to get the Backbuffer.");
+		return false;
+	}
+
+	hr = m_Device.Get()->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
+	if (FAILED(hr)) {
+		CONSOLE_LOG(Error, "Failed to create Render Target View.");
+		return false;
+	}
+
+	CONSOLE_LOG(Success, "Render Target View has been successfully created.");
 	return true;
 }
 
@@ -167,6 +184,7 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 
 void Engine::Renderer::UpdateFrame()
 {
+	ClearFrame();
 }
 
 void Engine::Renderer::ClearFrame()

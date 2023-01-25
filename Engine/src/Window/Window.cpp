@@ -63,7 +63,7 @@ void Engine::Window::Run()
 		}
 		else
 		{
-			
+			RendererDX->UpdateFrame();
 
 			m_windowTimer.Tick();
 			CalculateFrameRate();
