@@ -5,6 +5,7 @@
 #include <Windows.h>
 
 #include <Renderer/Renderer.h>
+#include <GameTimer/GameTimer.h>
 
 namespace Engine {
 
@@ -22,15 +23,19 @@ namespace Engine {
 		bool bIsRunning;
 	protected:
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
+		void CalculateFrameRate();
 
-		Renderer RendererDX;
+		Renderer* RendererDX;
 	private:
 		HINSTANCE m_hInstance;
 		HWND m_windowHandle;
 
 		UINT m_width, m_height;
 
-		const char* className = "WindowClass";
+		const char* m_className = "WindowClass";
+		const char* m_windowName = "LeafPotEngine";
+
+		GameTimer m_windowTimer;
 	};
 
 }

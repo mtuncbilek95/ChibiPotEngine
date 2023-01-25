@@ -12,7 +12,7 @@ namespace Engine {
 	class Renderer {
 
 	public:
-		Renderer();
+		Renderer(int width, int height);
 		Renderer(const Renderer&) = delete;
 		Renderer& operator= (const Renderer&) = delete;
 		~Renderer();
@@ -37,6 +37,7 @@ namespace Engine {
 		ComPtr<ID3D11InputLayout> m_InputLayout;
 		ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
 
+		D3D11_VIEWPORT Viewport;
 	};
 }
 

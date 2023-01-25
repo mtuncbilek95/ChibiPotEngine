@@ -6,13 +6,15 @@ Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nu
 {
 	this->m_width = width;
 	this->m_height = height;
+
+	RendererDX = new Renderer(width, height);
 }
 
 void Engine::Window::Initialize()
 {
 	WNDCLASSEX windowClass{};
 	windowClass.cbSize = sizeof(windowClass);
-	windowClass.lpszClassName = className;
+	windowClass.lpszClassName = m_className;
 	windowClass.lpszMenuName = nullptr;
 	windowClass.hInstance = m_hInstance;
 	windowClass.hIcon = (HICON)(LoadImage(m_hInstance, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 32, 32, 0));
@@ -32,7 +34,7 @@ void Engine::Window::Initialize()
 
 	AdjustWindowRect(&windowSize, windowStyle, false);
 
-	m_windowHandle = CreateWindowEx(0, className, "Application", windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
+	m_windowHandle = CreateWindowEx(0, m_className, m_windowName, windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
 		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 	if (m_windowHandle != nullptr) {
 		CONSOLE_LOG(Success, "Window has been successfuly created");
@@ -44,7 +46,7 @@ void Engine::Window::Initialize()
 
 	bIsRunning = true;
 
-	RendererDX.Initialize(m_windowHandle);
+	RendererDX->Initialize(m_windowHandle);
 }
 
 void Engine::Window::Run()
@@ -56,11 +58,14 @@ void Engine::Window::Run()
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	RendererDX->UpdateFrame();
+	RendererDX->ClearFrame();
 }
 
 void Engine::Window::Exit()
 {
-	UnregisterClass(className, m_hInstance);
+	UnregisterClass(m_className, m_hInstance);
 	DestroyWindow(m_windowHandle);
 }
 
@@ -80,4 +85,17 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	}
 
 	return DefWindowProc(windowHandle, message, wParam, lParam);
+}
+
+void Engine::Window::CalculateFrameRate()
+{
+	static int frameCount = 0;
+	static float timeElapsed = 0.0f;
+
+	frameCount++;
+
+	if ((timeElapsed) >= 1.0f) {
+		float fps = (float)frameCount;
+		float mspf = 1000.f / fps;
+	}
 }

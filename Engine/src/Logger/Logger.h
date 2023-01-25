@@ -17,6 +17,3 @@
 #define Display		WHITE "Display: "
 
 #define CONSOLE_LOG(color,message,...) printf(color message WHITE_END,__VA_ARGS__);
-
-#define EXIT_SUCCESS 0
-#define EXIT_FAILED -1
