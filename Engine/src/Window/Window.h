@@ -3,7 +3,10 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+#pragma region "Std Libraries"
 #include <string>
+#include <memory>
+#pragma enregion
 
 #include <Renderer/Renderer.h>
 #include <GameTimer/GameTimer.h>
@@ -28,7 +31,7 @@ namespace Engine {
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		void CalculateFrameRate();
 
-		Renderer* RendererDX;
+		std::unique_ptr<Renderer> RendererDX;
 	private:
 		HINSTANCE m_hInstance;
 		HWND m_windowHandle;

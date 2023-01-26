@@ -10,7 +10,7 @@ Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nu
 	this->m_width = width;
 	this->m_height = height;
 
-	RendererDX = new Renderer(width, height);
+	RendererDX = std::make_unique<Renderer>(width,height);
 }
 
 void Engine::Window::Initialize()
