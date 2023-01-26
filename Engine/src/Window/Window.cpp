@@ -3,8 +3,6 @@
 #include <Resources/Resource.h>
 #include <Logger/Logger.h>
 
-
-
 Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr), bIsRunning(false)
 {
 	this->m_width = width;
