@@ -11,7 +11,7 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/Renderer/DriverTypes.h" 
 "src/GameTimer/GameTimer.h" "src/GameTimer/GameTimer.cpp")
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/Engine/src)
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/Engine/src)
 
 target_link_libraries(${PROJECT_NAME} d3d11.lib)
 target_link_libraries(${PROJECT_NAME} dxgi.lib)

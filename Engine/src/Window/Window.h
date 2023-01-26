@@ -2,11 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-
-#pragma region "Std Libraries"
 #include <string>
-#include <memory>
-#pragma enregion
 
 #include <Renderer/Renderer.h>
 #include <GameTimer/GameTimer.h>
@@ -31,15 +27,15 @@ namespace Engine {
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		void CalculateFrameRate();
 
-		std::unique_ptr<Renderer> RendererDX;
+		Renderer* RendererDX;
 	private:
 		HINSTANCE m_hInstance;
 		HWND m_windowHandle;
 
 		UINT m_width, m_height;
 
-		const char* m_className = "WindowClass";
-		string m_windowName = "ChibiPot Engine";
+		const string m_className;
+		const string m_windowName;
 
 		GameTimer m_windowTimer;
 	};

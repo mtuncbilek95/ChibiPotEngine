@@ -3,19 +3,20 @@
 #include <Resources/Resource.h>
 #include <Logger/Logger.h>
 
-Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr), bIsRunning(false)
+Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr), 
+bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
 
-	RendererDX = std::make_unique<Renderer>(width,height);
+	RendererDX = new Renderer(width, height);
 }
 
 void Engine::Window::Initialize()
 {
 	WNDCLASSEX windowClass{};
 	windowClass.cbSize = sizeof(windowClass);
-	windowClass.lpszClassName = m_className;
+	windowClass.lpszClassName = m_className.c_str();
 	windowClass.lpszMenuName = nullptr;
 	windowClass.hInstance = m_hInstance;
 	windowClass.hIcon = (HICON)(LoadImage(m_hInstance, MAKEINTRESOURCE(IDI_APPICON), IMAGE_ICON, 32, 32, 0));
@@ -35,7 +36,7 @@ void Engine::Window::Initialize()
 
 	AdjustWindowRect(&windowSize, windowStyle, false);
 
-	m_windowHandle = CreateWindowEx(0, m_className, m_windowName.c_str(), windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
+	m_windowHandle = CreateWindowEx(0, m_className.c_str(), m_windowName.c_str(), windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
 		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 
 	if (m_windowHandle != nullptr) {
@@ -71,7 +72,7 @@ void Engine::Window::Run()
 
 void Engine::Window::Exit()
 {
-	UnregisterClass(m_className, m_hInstance);
+	UnregisterClass(m_className.c_str(), m_hInstance);
 	DestroyWindow(m_windowHandle);
 }
 
