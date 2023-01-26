@@ -18,5 +18,5 @@ ChibiPot Engine will only run a single static scene with no input.
 - [ ] Tile Atlas
 - [ ] Scene
 
-## The Excepted Scene
+## The Expected Scene
 ![](https://img.itch.zone/aW1nLzI1ODU2MTEuZ2lm/original/IQCAru.gif)
