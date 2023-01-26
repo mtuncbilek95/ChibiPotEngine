@@ -1,13 +1,9 @@
 #pragma once
 
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-#include <string>
+#include <Core/CoreMinimal.h>
 
 #include <Renderer/Renderer.h>
 #include <GameTimer/GameTimer.h>
-
-using std::string;
 
 namespace Engine {
 
@@ -22,10 +18,10 @@ namespace Engine {
 		void Run();
 		void Exit();
 
-		bool bIsRunning;
 	protected:
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
-		void CalculateFrameRate();
+		void CalculateFrameRate(float DeltaTime);
+		void ProcessMessage();
 
 		Renderer* RendererDX;
 	private:
@@ -38,5 +34,7 @@ namespace Engine {
 		const string m_windowName;
 
 		GameTimer m_windowTimer;
+
+		bool bIsRunning;
 	};
 }

@@ -1,9 +1,8 @@
 #include "Window.h"
 
 #include <Resources/Resource.h>
-#include <Logger/Logger.h>
 
-Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr), 
+Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
 bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
@@ -40,7 +39,7 @@ void Engine::Window::Initialize()
 		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 
 	if (m_windowHandle != nullptr) {
-		CONSOLE_LOG(Success, "Window has been successfully created.");
+		CONSOLE_LOG(CB_Success, "Window has been successfully created.");
 		ShowWindow(m_windowHandle, SW_SHOW);
 	}
 
@@ -49,24 +48,15 @@ void Engine::Window::Initialize()
 
 void Engine::Window::Run()
 {
-	MSG msg{};
 
-	m_windowTimer.Reset();
+	while (bIsRunning) {
 
-	while (bIsRunning)
-	{
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-		else
-		{
-			RendererDX->UpdateFrame();
+		ProcessMessage();
 
-			m_windowTimer.Tick();
-			CalculateFrameRate();
-		}
+		RendererDX->UpdateFrame(m_windowTimer.DeltaTime());
+		CalculateFrameRate(m_windowTimer.DeltaTime());
+
+		m_windowTimer.Tick();
 	}
 }
 
@@ -94,22 +84,28 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	return DefWindowProc(windowHandle, message, wParam, lParam);
 }
 
-void Engine::Window::CalculateFrameRate()
+void Engine::Window::CalculateFrameRate(float DeltaTime)
 {
-	static int frameCount = 0;
-	static float timeElapsed = 0.0f;
+	static float counter{0};
+	counter += DeltaTime;
 
-	frameCount++;
-
-	if ((m_windowTimer.TotalTime() - timeElapsed) >= 1.0f) {
-		float fps = (float)frameCount;
-		float mspf = 1000.f / fps;
+	if (counter >= 1.0f) {
+		int fps = (int)(1.f / DeltaTime);
 		string fpsStr = std::to_string(static_cast<int>(fps));
 
 		string windowText = m_windowName + " FPS: " + fpsStr;
 		SetWindowText(m_windowHandle, windowText.c_str());
+		counter = 0.0f;
+	}
+}
 
-		frameCount = 0;
-		timeElapsed += 1.0f;
+void Engine::Window::ProcessMessage()
+{
+	MSG msg{};
+
+	while (PeekMessage(&msg, m_windowHandle, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
 	}
 }

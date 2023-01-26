@@ -1,10 +1,8 @@
 #pragma once
 
-#include "DriverTypes.h"
-#include <d3d11.h>
-#include <wrl.h>
+#include <Core/CoreMinimal.h>
 
-using namespace Microsoft::WRL;
+#include <Renderer/DriverTypes.h>
 
 namespace Engine {
 
@@ -17,7 +15,7 @@ namespace Engine {
 		~Renderer();
 
 		bool Initialize(HWND handle);
-		void UpdateFrame();
+		void UpdateFrame(float DeltaTime);
 
 	protected:
 		bool CreateDeviceContext(DriverTypes typeValue = DriverTypes::Hardware);
@@ -26,6 +24,7 @@ namespace Engine {
 		bool CreatePixelShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateVertexShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateInputLayout(ComPtr<ID3DBlob>& Blob);
+
 		void ClearFrame();
 
 	private:
@@ -36,6 +35,10 @@ namespace Engine {
 		ComPtr<ID3D11InputLayout> m_InputLayout;
 		ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
 
+		ComPtr<ID3D11PixelShader> m_PixelShader;
+		ComPtr<ID3D11VertexShader> m_VertexShader;
+
 		D3D11_VIEWPORT Viewport;
 	};
 }
+

@@ -1,7 +1,5 @@
 #include "Renderer.h"
 
-#include <Logger/Logger.h>
-
 Engine::Renderer::Renderer(int width, int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
@@ -68,50 +66,50 @@ bool Engine::Renderer::CreateDeviceContext(DriverTypes typeValue)
 		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(Warning, "Failed to create the D3D11 Device.");
+		CONSOLE_LOG(CB_Warning, "Failed to create the D3D11 Device.");
 		return false;
 	}
-	CONSOLE_LOG(Success, "D3D11 Device has been successfully created.");
+	CONSOLE_LOG(CB_Success, "D3D11 Device has been successfully created.");
 
 	return true;
 }
 
 bool Engine::Renderer::CreateSwapChain(HWND handle)
 {
-	DXGI_SWAP_CHAIN_DESC SwapChainDesc{};
+	DXGI_SWAP_CHAIN_DESC swapChainDesc{};
 
 	//  Swap chain figures out the size of the window by checking window handle
-	SwapChainDesc.BufferDesc.Width = (unsigned int)Viewport.Width;
-	SwapChainDesc.BufferDesc.Height = (unsigned int)Viewport.Height;
+	swapChainDesc.BufferDesc.Width = (unsigned int)Viewport.Width;
+	swapChainDesc.BufferDesc.Height = (unsigned int)Viewport.Height;
 
 	//  Color Format
-	SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-	SwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
-	SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 
 	//  Since we don't specify size, scaling is also unspecified.
-	SwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	SwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	swapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	swapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
 	//  Anti-aliasing
-	SwapChainDesc.SampleDesc.Count = 1;
-	SwapChainDesc.SampleDesc.Quality = 0;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.SampleDesc.Quality = 0;
 
 	//  Pipeline is going to be rendering all of stuff.
-	SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	SwapChainDesc.BufferCount = 2;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 2;
 
-	SwapChainDesc.OutputWindow = handle;
-	SwapChainDesc.Windowed = true;
-	SwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	SwapChainDesc.Flags = 0;
+	swapChainDesc.OutputWindow = handle;
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	swapChainDesc.Flags = 0;
 
 	ComPtr<IDXGIDevice> dxgiDevice;
 
 	HRESULT hr = m_Device.As(&dxgiDevice);
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to get the DXGI Device.");
+		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Device.");
 		return false;
 	}
 
@@ -120,7 +118,7 @@ bool Engine::Renderer::CreateSwapChain(HWND handle)
 	hr = dxgiDevice.Get()->GetParent(IID_PPV_ARGS(dxgiAdapter.GetAddressOf()));
 
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to get the DXGI Adapter.");
+		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Adapter.");
 		return false;
 	}
 
@@ -129,18 +127,18 @@ bool Engine::Renderer::CreateSwapChain(HWND handle)
 	hr = dxgiAdapter.Get()->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to get the DXGI Factory.");
+		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
 
-	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &SwapChainDesc, m_SwapChain.GetAddressOf());
+	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, m_SwapChain.GetAddressOf());
 
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to create Swapchain.");
+		CONSOLE_LOG(CB_Error, "Failed to create Swapchain.");
 		return false;
 	}
 
-	CONSOLE_LOG(Success, "Swapchain has been successfully created.");
+	CONSOLE_LOG(CB_Success, "Swapchain has been successfully created.");
 
 	return true;
 }
@@ -149,40 +147,96 @@ bool Engine::Renderer::CreateRenderTargetView()
 {
 	ComPtr<ID3D11Texture2D> backBuffer;
 
-	D3D11_RENDER_TARGET_VIEW_DESC TargetViewDesc{};
+	D3D11_RENDER_TARGET_VIEW_DESC targetViewDesc{};
 
 	HRESULT hr = m_SwapChain.Get()->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to get the Backbuffer.");
+		CONSOLE_LOG(CB_Error, "Failed to get the Backbuffer.");
 		return false;
 	}
 
 	hr = m_Device.Get()->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
 	if (FAILED(hr)) {
-		CONSOLE_LOG(Error, "Failed to create Render Target View.");
+		CONSOLE_LOG(CB_Error, "Failed to create Render Target View.");
 		return false;
 	}
 
-	CONSOLE_LOG(Success, "Render Target View has been successfully created.");
+	CONSOLE_LOG(CB_Success, "Render Target View has been successfully created.");
 	return true;
 }
 
 bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob>& Blob)
 {
+	ComPtr<ID3DBlob> ErrorBlob;
+
+	const string infoPixelShader = Logger::GetShaderData("PixelShader");
+
+	D3DCompile(infoPixelShader.c_str(), infoPixelShader.length(), nullptr, nullptr, nullptr, "main", "ps_5_0",
+		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+
+	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
+		printf("%s", (char*)ErrorBlob->GetBufferPointer());
+
+	HRESULT hr = m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader);
+
+	if (FAILED(hr))
+	{
+		CONSOLE_LOG(CB_Error, "Failed to create pixel shader.");
+		return false;
+	}
+
+	m_Context->PSSetShader(m_PixelShader.Get(), nullptr, 0u);
+
+	CONSOLE_LOG(CB_Success, "Pixel Shader has been successfully created.");
 	return true;
 }
 
 bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob>& Blob)
 {
+	ComPtr<ID3DBlob> ErrorBlob;
+
+	const string infoVertexShader = Logger::GetShaderData("VertexShader");
+	D3DCompile(infoVertexShader.c_str(), infoVertexShader.length(), nullptr, nullptr, nullptr, "main", "vs_5_0",
+		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+
+	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
+		printf("%s", (char*)ErrorBlob->GetBufferPointer());
+
+	HRESULT hr = m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_VertexShader);
+
+	if (FAILED(hr))
+	{
+		CONSOLE_LOG(CB_Error, "Failed to create vertex shader.");
+		return false;
+	}
+
+	m_Context->VSSetShader(m_VertexShader.Get(), nullptr, 0u);
+
+	CONSOLE_LOG(CB_Success, "Vertex Shader has been successfully created.");
+
 	return true;
 }
 
 bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
+	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
+	{
+		{"Position", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0 ,0, D3D11_INPUT_PER_VERTEX_DATA,0 },
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM,0 ,12u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+	};
+
+	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, static_cast<unsigned int>(_countof(inputElementDesc)),
+		Blob->GetBufferPointer(), Blob->GetBufferSize(), m_InputLayout.GetAddressOf());
+	if (FAILED(hr)) {
+		CONSOLE_LOG(CB_Error, "Failed to create Input Layout");
+		return false;
+	}
+
+	CONSOLE_LOG(CB_Success, "Input Layout has been successfully created.");
 	return true;
 }
 
-void Engine::Renderer::UpdateFrame()
+void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
 }
@@ -191,4 +245,5 @@ void Engine::Renderer::ClearFrame()
 {
 	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
+	m_SwapChain->Present(1, 0);
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Core/CoreMinimal.h>
+
 class GameTimer
 {
 public:
