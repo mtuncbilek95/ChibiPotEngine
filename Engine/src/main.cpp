@@ -2,10 +2,11 @@
 
 int main(int argumentC, char** argumentValue) {
 
-	Engine::Window* AppWindow = new Engine::Window(800, 800);
+	Engine::Window* AppWindow = new Engine::Window(600, 600);
 
 	AppWindow->Initialize();
-	AppWindow->Run();
+	while (AppWindow->bIsRunning)
+		AppWindow->Run();
 	AppWindow->Exit();
 
 	delete AppWindow;

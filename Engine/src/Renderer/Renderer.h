@@ -2,7 +2,8 @@
 
 #include <Core/CoreMinimal.h>
 
-#include <Renderer/DriverTypes.h>
+#include <Renderer/RenderTypes.h>
+#include <Assets/Model.h>
 
 namespace Engine {
 
@@ -14,17 +15,17 @@ namespace Engine {
 		Renderer& operator= (const Renderer&) = delete;
 		~Renderer();
 
-		bool Initialize(HWND handle);
+		bool Initialize(const HWND handle);
 		void UpdateFrame(float DeltaTime);
 
 	protected:
-		bool CreateDeviceContext(DriverTypes typeValue = DriverTypes::Hardware);
-		bool CreateSwapChain(HWND handle);
+		bool CreateDeviceContext(const DriverTypes typeValue = DriverTypes::Hardware);
+		bool CreateSwapChain(const HWND handle);
 		bool CreateRenderTargetView();
 		bool CreatePixelShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateVertexShader(ComPtr<ID3DBlob>& Blob);
 		bool CreateInputLayout(ComPtr<ID3DBlob>& Blob);
-
+		bool CreateInputAssembler();
 		void ClearFrame();
 
 	private:
@@ -39,6 +40,8 @@ namespace Engine {
 		ComPtr<ID3D11VertexShader> m_VertexShader;
 
 		D3D11_VIEWPORT Viewport;
+
+		std::vector<Model> Models;
 	};
 }
 

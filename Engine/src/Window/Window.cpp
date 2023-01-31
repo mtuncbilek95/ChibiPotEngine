@@ -48,15 +48,22 @@ void Engine::Window::Initialize()
 
 void Engine::Window::Run()
 {
+	m_windowTimer.Reset();
 
-	while (bIsRunning) {
+	MSG msg{};
 
-		ProcessMessage();
+	while (msg.message != WM_QUIT) {
 
-		RendererDX->UpdateFrame(m_windowTimer.DeltaTime());
-		CalculateFrameRate(m_windowTimer.DeltaTime());
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else {
+			RendererDX->UpdateFrame(m_windowTimer.DeltaTime());
+			CalculateFrameRate(m_windowTimer.DeltaTime());
 
-		m_windowTimer.Tick();
+			m_windowTimer.Tick();
+		}
 	}
 }
 
@@ -64,6 +71,7 @@ void Engine::Window::Exit()
 {
 	UnregisterClass(m_className.c_str(), m_hInstance);
 	DestroyWindow(m_windowHandle);
+	delete RendererDX;
 }
 
 LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -79,6 +87,9 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	case WM_CLOSE:
 		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
 		break;
+	case WM_QUIT:
+		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		break;
 	}
 
 	return DefWindowProc(windowHandle, message, wParam, lParam);
@@ -89,12 +100,14 @@ void Engine::Window::CalculateFrameRate(float DeltaTime)
 	static float counter{0};
 	counter += DeltaTime;
 
+	int fps = (int)(1.f / DeltaTime);
+
 	if (counter >= 1.0f) {
-		int fps = (int)(1.f / DeltaTime);
+		
 		string fpsStr = std::to_string(static_cast<int>(fps));
 
 		string windowText = m_windowName + " FPS: " + fpsStr;
-		SetWindowText(m_windowHandle, windowText.c_str());
+		CONSOLE_LOG(CB_Display, "%s", windowText.c_str());
 		counter = 0.0f;
 	}
 }
@@ -103,7 +116,7 @@ void Engine::Window::ProcessMessage()
 {
 	MSG msg{};
 
-	while (PeekMessage(&msg, m_windowHandle, 0, 0, PM_REMOVE))
+	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);

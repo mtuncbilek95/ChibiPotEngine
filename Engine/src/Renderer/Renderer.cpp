@@ -1,6 +1,8 @@
 #include "Renderer.h"
 
-Engine::Renderer::Renderer(int width, int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
+#include <Assets/ModelData.h>
+
+Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
 	Viewport.Height = (float)height;
@@ -19,7 +21,7 @@ Engine::Renderer::~Renderer()
 	m_RenderTargetView.Reset();
 }
 
-bool Engine::Renderer::Initialize(HWND handle)
+bool Engine::Renderer::Initialize(const HWND handle)
 {
 	ComPtr<ID3DBlob> Blob{};
 
@@ -35,11 +37,12 @@ bool Engine::Renderer::Initialize(HWND handle)
 		return false;
 	if (!CreateInputLayout(Blob))
 		return false;
-
+	if (!CreateInputAssembler())
+		return false;
 	return true;
 }
 
-bool Engine::Renderer::CreateDeviceContext(DriverTypes typeValue)
+bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 {
 	D3D_DRIVER_TYPE driverType{};
 
@@ -74,13 +77,13 @@ bool Engine::Renderer::CreateDeviceContext(DriverTypes typeValue)
 	return true;
 }
 
-bool Engine::Renderer::CreateSwapChain(HWND handle)
+bool Engine::Renderer::CreateSwapChain(const HWND handle)
 {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{};
 
 	//  Swap chain figures out the size of the window by checking window handle
-	swapChainDesc.BufferDesc.Width = (unsigned int)Viewport.Width;
-	swapChainDesc.BufferDesc.Height = (unsigned int)Viewport.Height;
+	swapChainDesc.BufferDesc.Width = (uint32)Viewport.Width;
+	swapChainDesc.BufferDesc.Height = (uint32)Viewport.Height;
 
 	//  Color Format
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -233,6 +236,16 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 	}
 
 	CONSOLE_LOG(CB_Success, "Input Layout has been successfully created.");
+	return true;
+}
+
+bool Engine::Renderer::CreateInputAssembler()
+{
+	m_Context->RSSetViewports(1u, &Viewport);
+	m_Context->IASetInputLayout(m_InputLayout.Get());
+	m_Context->OMSetRenderTargets(1u, m_RenderTargetView.GetAddressOf(), nullptr);
+	m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	return true;
 }
 
