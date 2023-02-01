@@ -41,7 +41,10 @@ namespace Engine {
 
 		D3D11_VIEWPORT Viewport;
 
-		std::vector<Model> Models;
+		void TriangleTest();
+
+		ComPtr<ID3D11Buffer> vertexBuffer;
+		ComPtr<ID3D11Buffer> indexBuffer;
 	};
 }
 

@@ -2,6 +2,21 @@
 
 #include <Assets/ModelData.h>
 
+//	Beyzanin sevdigi renk #FBB7C0 
+
+const VertexData vertices[] =
+{
+	{{-0.5f, -0.5f, 1.0f}, {0, 255, 0, 0}},
+	{{-0.5f, 0.5f, 1.0f}, {0, 255, 0, 0}},
+	{{0.5f, -0.5f, 1.0f}, {0, 255, 0, 0}},
+	{{0.5f, 0.5f, 1.0f}, {0, 255, 0, 0}},
+};
+
+const uint16 indices[] = {
+	0, 1, 2,
+	1, 3, 2,
+};
+
 Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
@@ -37,8 +52,10 @@ bool Engine::Renderer::Initialize(const HWND handle)
 		return false;
 	if (!CreateInputLayout(Blob))
 		return false;
-	if (!CreateInputAssembler())
-		return false;
+
+	CreateInputAssembler();
+	TriangleTest();
+
 	return true;
 }
 
@@ -86,7 +103,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 	swapChainDesc.BufferDesc.Height = (uint32)Viewport.Height;
 
 	//  Color Format
-	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	swapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
@@ -111,7 +128,8 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 	ComPtr<IDXGIDevice> dxgiDevice;
 
 	HRESULT hr = m_Device.As(&dxgiDevice);
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Device.");
 		return false;
 	}
@@ -120,7 +138,8 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	hr = dxgiDevice.Get()->GetParent(IID_PPV_ARGS(dxgiAdapter.GetAddressOf()));
 
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Adapter.");
 		return false;
 	}
@@ -129,14 +148,16 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	hr = dxgiAdapter.Get()->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
 
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
 
-	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, m_SwapChain.GetAddressOf());
+	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, &m_SwapChain);
 
-	if (FAILED(hr)) {
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to create Swapchain.");
 		return false;
 	}
@@ -152,14 +173,16 @@ bool Engine::Renderer::CreateRenderTargetView()
 
 	D3D11_RENDER_TARGET_VIEW_DESC targetViewDesc{};
 
-	HRESULT hr = m_SwapChain.Get()->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
-	if (FAILED(hr)) {
+	HRESULT hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to get the Backbuffer.");
 		return false;
 	}
 
-	hr = m_Device.Get()->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
-	if (FAILED(hr)) {
+	hr = m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to create Render Target View.");
 		return false;
 	}
@@ -224,13 +247,15 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32A32_FLOAT,0 ,0, D3D11_INPUT_PER_VERTEX_DATA,0 },
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM,0 ,12u, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{"Position", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, static_cast<unsigned int>(_countof(inputElementDesc)),
-		Blob->GetBufferPointer(), Blob->GetBufferSize(), m_InputLayout.GetAddressOf());
-	if (FAILED(hr)) {
+	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, static_cast<uint32>(_countof(inputElementDesc)),
+		Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_InputLayout);
+
+	if (FAILED(hr))
+	{
 		CONSOLE_LOG(CB_Error, "Failed to create Input Layout");
 		return false;
 	}
@@ -245,18 +270,54 @@ bool Engine::Renderer::CreateInputAssembler()
 	m_Context->IASetInputLayout(m_InputLayout.Get());
 	m_Context->OMSetRenderTargets(1u, m_RenderTargetView.GetAddressOf(), nullptr);
 	m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 	return true;
 }
 
 void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
+	m_Context->DrawIndexed(_countof(indices), 0u, 0u);
+	m_SwapChain->Present(1, 0);
 }
 
 void Engine::Renderer::ClearFrame()
 {
 	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
-	m_SwapChain->Present(1, 0);
+}
+
+void Engine::Renderer::TriangleTest()
+{
+	D3D11_BUFFER_DESC VertexBufferDesc = {};
+	VertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	VertexBufferDesc.CPUAccessFlags = 0;
+	VertexBufferDesc.MiscFlags = 0;
+	VertexBufferDesc.ByteWidth = sizeof(vertices);
+	VertexBufferDesc.StructureByteStride = sizeof(VertexData);
+
+	D3D11_SUBRESOURCE_DATA VertexResourceData = {};
+	VertexResourceData.pSysMem = vertices;
+
+	m_Device->CreateBuffer(&VertexBufferDesc, &VertexResourceData, &vertexBuffer);
+
+	D3D11_BUFFER_DESC IndexBufferDesc = {};
+	IndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	IndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	IndexBufferDesc.CPUAccessFlags = 0;
+	IndexBufferDesc.MiscFlags = 0;
+	IndexBufferDesc.ByteWidth = sizeof(indices);
+	IndexBufferDesc.StructureByteStride = sizeof(uint16);
+
+	D3D11_SUBRESOURCE_DATA IndexResourceData = {};
+	IndexResourceData.pSysMem = indices;
+
+	m_Device->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &indexBuffer);
+
+	const uint32 stride = sizeof(VertexData);
+	const uint32 offset = 0u;
+
+	m_Context->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
+	m_Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+
 }

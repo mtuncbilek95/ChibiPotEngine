@@ -4,15 +4,10 @@ struct vOut
 	float4 pos : SV_Position;
 };
 
-cbuffer CBuffer
-{
-	column_major matrix transform;
-}
-
 vOut main( float3 pos : Position, float3 color : Color )
 {
 	vOut vso;
-	vso.pos = mul(float4(pos,1.0f),transform);
+	vso.pos = float4(pos, 1.0f);
 	vso.color = color;
 	return vso;
 }

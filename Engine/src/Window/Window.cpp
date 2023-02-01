@@ -71,6 +71,8 @@ void Engine::Window::Exit()
 {
 	UnregisterClass(m_className.c_str(), m_hInstance);
 	DestroyWindow(m_windowHandle);
+	m_hInstance = 0;
+	m_windowHandle = 0;
 	delete RendererDX;
 }
 
@@ -89,6 +91,9 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 		break;
 	case WM_QUIT:
 		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
 		break;
 	}
 
