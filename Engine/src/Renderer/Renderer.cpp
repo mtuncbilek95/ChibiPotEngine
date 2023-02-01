@@ -6,10 +6,10 @@
 
 const VertexData vertices[] =
 {
-	{{-0.5f, -0.5f, 1.0f}, {0, 255, 0, 0}},
-	{{-0.5f, 0.5f, 1.0f}, {0, 255, 0, 0}},
-	{{0.5f, -0.5f, 1.0f}, {0, 255, 0, 0}},
-	{{0.5f, 0.5f, 1.0f}, {0, 255, 0, 0}},
+	{{-0.5f, -0.5f, 1.0f}, {251, 183, 192, 0}},
+	{{-0.5f, 0.5f, 1.0f}, {251, 183, 192, 0}},
+	{{0.5f, -0.5f, 1.0f}, {251, 183, 192, 0}},
+	{{0.5f, 0.5f, 1.0f}, {251, 183, 192, 0}},
 };
 
 const uint16 indices[] = {
@@ -99,8 +99,8 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{};
 
 	//  Swap chain figures out the size of the window by checking window handle
-	swapChainDesc.BufferDesc.Width = (uint32)Viewport.Width;
-	swapChainDesc.BufferDesc.Height = (uint32)Viewport.Height;
+	swapChainDesc.BufferDesc.Width = 0;
+	swapChainDesc.BufferDesc.Height = 0;
 
 	//  Color Format
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
