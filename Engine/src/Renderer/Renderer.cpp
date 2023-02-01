@@ -6,10 +6,10 @@
 
 const VertexData vertices[] =
 {
-	{{-0.5f, -0.5f, 1.0f}, {251, 183, 192, 0}},
-	{{-0.5f, 0.5f, 1.0f}, {251, 183, 192, 0}},
-	{{0.5f, -0.5f, 1.0f}, {251, 183, 192, 0}},
-	{{0.5f, 0.5f, 1.0f}, {251, 183, 192, 0}},
+	{{-0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}},
+	{{-0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}},
+	{{0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}},
+	{{0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}},
 };
 
 const uint16 indices[] = {
@@ -247,11 +247,11 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
-	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, static_cast<uint32>(_countof(inputElementDesc)),
+	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, (uint32)std::size(inputElementDesc),
 		Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_InputLayout);
 
 	if (FAILED(hr))
@@ -276,7 +276,7 @@ bool Engine::Renderer::CreateInputAssembler()
 void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
-	m_Context->DrawIndexed(_countof(indices), 0u, 0u);
+	m_Context->DrawIndexed(sizeof(indices) / sizeof(uint16), 0u, 0u);
 	m_SwapChain->Present(1, 0);
 }
 
