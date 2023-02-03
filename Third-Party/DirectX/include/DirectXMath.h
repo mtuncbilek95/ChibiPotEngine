@@ -764,6 +764,25 @@ namespace DirectX
         explicit XMUINT4(_In_reads_(4) const uint32_t* pArray) noexcept : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
     };
 
+    struct XMUCHAR4
+    {
+        uint8_t x;
+        uint8_t y;
+        uint8_t z;
+        uint8_t w;
+
+        XMUCHAR4() = default;
+
+        XMUCHAR4(const XMUCHAR4&) = default;
+        XMUCHAR4& operator=(const XMUCHAR4&) = default;
+
+        XMUCHAR4(XMUCHAR4&&) = default;
+        XMUCHAR4& operator=(XMUCHAR4&&) = default;
+
+        constexpr XMUCHAR4(uint8_t _x, uint8_t _y, uint8_t _z, uint8_t _w) noexcept : x(_x), y(_y), z(_z), w(_w) {}
+        explicit XMUCHAR4(_In_reads_(4) const uint8_t* pArray) noexcept : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
+    };
+
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu-anonymous-struct"
