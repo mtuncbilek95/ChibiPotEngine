@@ -2,21 +2,6 @@
 
 #include <Assets/ModelData.h>
 
-//	Beyzanin sevdigi renk #FBB7C0 
-
-const VertexData vertices[] =
-{
-	{{-0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}},
-	{{-0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}},
-	{{0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}},
-	{{0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}},
-};
-
-const uint16 indices[] = {
-	0, 1, 2,
-	1, 3, 2,
-};
-
 Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
@@ -54,7 +39,7 @@ bool Engine::Renderer::Initialize(const HWND handle)
 		return false;
 
 	CreateInputAssembler();
-	TriangleTest();
+	squareTest = new Model(m_Context, m_Device);
 
 	return true;
 }
@@ -276,7 +261,7 @@ bool Engine::Renderer::CreateInputAssembler()
 void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
-	m_Context->DrawIndexed(sizeof(indices) / sizeof(uint16), 0u, 0u);
+	squareTest->UpdateModel(DeltaTime);
 	m_SwapChain->Present(1, 0);
 }
 
@@ -284,40 +269,4 @@ void Engine::Renderer::ClearFrame()
 {
 	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
-}
-
-void Engine::Renderer::TriangleTest()
-{
-	D3D11_BUFFER_DESC VertexBufferDesc = {};
-	VertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	VertexBufferDesc.CPUAccessFlags = 0;
-	VertexBufferDesc.MiscFlags = 0;
-	VertexBufferDesc.ByteWidth = sizeof(vertices);
-	VertexBufferDesc.StructureByteStride = sizeof(VertexData);
-
-	D3D11_SUBRESOURCE_DATA VertexResourceData = {};
-	VertexResourceData.pSysMem = vertices;
-
-	m_Device->CreateBuffer(&VertexBufferDesc, &VertexResourceData, &vertexBuffer);
-
-	D3D11_BUFFER_DESC IndexBufferDesc = {};
-	IndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	IndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	IndexBufferDesc.CPUAccessFlags = 0;
-	IndexBufferDesc.MiscFlags = 0;
-	IndexBufferDesc.ByteWidth = sizeof(indices);
-	IndexBufferDesc.StructureByteStride = sizeof(uint16);
-
-	D3D11_SUBRESOURCE_DATA IndexResourceData = {};
-	IndexResourceData.pSysMem = indices;
-
-	m_Device->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &indexBuffer);
-
-	const uint32 stride = sizeof(VertexData);
-	const uint32 offset = 0u;
-
-	m_Context->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
-	m_Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-
 }

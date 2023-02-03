@@ -764,23 +764,23 @@ namespace DirectX
         explicit XMUINT4(_In_reads_(4) const uint32_t* pArray) noexcept : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
     };
 
-    struct XMUCHAR4
+    struct XMCOLOR4
     {
-        uint8_t x;
-        uint8_t y;
-        uint8_t z;
-        uint8_t w;
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+        uint8_t a;
 
-        XMUCHAR4() = default;
+        XMCOLOR4() = default;
 
-        XMUCHAR4(const XMUCHAR4&) = default;
-        XMUCHAR4& operator=(const XMUCHAR4&) = default;
+        XMCOLOR4(const XMCOLOR4&) = default;
+        XMCOLOR4& operator=(const XMCOLOR4&) = default;
 
-        XMUCHAR4(XMUCHAR4&&) = default;
-        XMUCHAR4& operator=(XMUCHAR4&&) = default;
+        XMCOLOR4(XMCOLOR4&&) = default;
+        XMCOLOR4& operator=(XMCOLOR4&&) = default;
 
-        constexpr XMUCHAR4(uint8_t _x, uint8_t _y, uint8_t _z, uint8_t _w) noexcept : x(_x), y(_y), z(_z), w(_w) {}
-        explicit XMUCHAR4(_In_reads_(4) const uint8_t* pArray) noexcept : x(pArray[0]), y(pArray[1]), z(pArray[2]), w(pArray[3]) {}
+        constexpr XMCOLOR4(uint8_t _r, uint8_t _g, uint8_t _b, uint8_t _a) noexcept : r(_r), g(_g), b(_b), a(_a) {}
+        explicit XMCOLOR4(_In_reads_(4) const uint8_t* pArray) noexcept : r(pArray[0]), g(pArray[1]), b(pArray[2]), a(pArray[3]) {}
     };
 
 #ifdef __clang__
