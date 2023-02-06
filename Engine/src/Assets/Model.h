@@ -13,7 +13,7 @@ public:
 	~Model();
 
 	void UpdateModel(float DeltaTime);
-	
+	uint16 GetIndicesCount();
 protected:
 	void InitializeModel();
 
@@ -28,6 +28,8 @@ private:
 	std::vector<uint16> indices;
 
 private:
+	// Model icinde isler complex lesirse refactor
+	// Hiyerarside dxdevices en yukarda.
 	ComPtr<ID3D11DeviceContext>& dxContext;
 	ComPtr<ID3D11Device>& dxDevice;
 };

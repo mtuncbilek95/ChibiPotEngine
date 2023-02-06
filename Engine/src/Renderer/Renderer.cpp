@@ -2,7 +2,8 @@
 
 #include <Assets/ModelData.h>
 
-Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), m_Context(nullptr), m_RenderTargetView(nullptr)
+Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), 
+m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
 	Viewport.Height = (float)height;
@@ -39,7 +40,10 @@ bool Engine::Renderer::Initialize(const HWND handle)
 		return false;
 
 	CreateInputAssembler();
-	squareTest = new Model(m_Context, m_Device);
+
+	Model* king = new Model(m_Context, m_Device);
+
+	Models.push_back(king);
 
 	return true;
 }
@@ -261,7 +265,12 @@ bool Engine::Renderer::CreateInputAssembler()
 void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
-	squareTest->UpdateModel(DeltaTime);
+
+	for (auto& model : Models) {
+		model->UpdateModel(DeltaTime);
+		m_Context->DrawIndexed(model->GetIndicesCount(), 0, 0);
+	}
+	
 	m_SwapChain->Present(1, 0);
 }
 

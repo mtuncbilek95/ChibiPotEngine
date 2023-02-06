@@ -41,7 +41,7 @@ namespace Engine {
 
 		D3D11_VIEWPORT Viewport;
 
-		Model* squareTest;
+		std::vector<Model*> Models;
 	};
 }
 

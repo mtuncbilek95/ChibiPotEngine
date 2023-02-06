@@ -1,5 +1,8 @@
 #include "Model.h"
 
+// Shader Resource View dipnot: its not data. its know how.
+
+
 Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device) : dxContext(Context), dxDevice(Device)
 {
 	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {251, 183, 192, 255} });
@@ -52,7 +55,7 @@ void Model::InitializeModel()
 	VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	VertexBufferDesc.CPUAccessFlags = 0;
 	VertexBufferDesc.MiscFlags = 0;
-	VertexBufferDesc.ByteWidth = sizeof(vertices) * 2; // Need to fix this implementation
+	VertexBufferDesc.ByteWidth = sizeof(VertexData) * vertices.size(); // Need to fix this implementation
 	VertexBufferDesc.StructureByteStride = sizeof(VertexData);
 
 	D3D11_SUBRESOURCE_DATA VertexResourceData = {};
@@ -65,11 +68,12 @@ void Model::InitializeModel()
 	IndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	IndexBufferDesc.CPUAccessFlags = 0;
 	IndexBufferDesc.MiscFlags = 0;
-	IndexBufferDesc.ByteWidth = ((sizeof(indices) * 6) / 16); // Need to fix this implementation
+	IndexBufferDesc.ByteWidth = sizeof(uint16) * indices.size(); // Need to fix this implementation
+
 	IndexBufferDesc.StructureByteStride = sizeof(uint16);
 
 	D3D11_SUBRESOURCE_DATA IndexResourceData = {};
-	IndexResourceData.pSysMem = (void *)indices.data();
+	IndexResourceData.pSysMem = (void*)indices.data();
 
 	dxDevice->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &m_IndexBuffer);
 
@@ -83,4 +87,9 @@ void Model::InitializeModel()
 void Model::UpdateModel(float DeltaTime)
 {
 	dxContext->DrawIndexed(indices.size(), 0u, 0u);
+}
+
+uint16 Model::GetIndicesCount()
+{
+	return indices.size();
 }

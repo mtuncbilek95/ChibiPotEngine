@@ -19,7 +19,7 @@
 #define CONSOLE_LOG(color,message,...) printf(color message WHITE_END,__VA_ARGS__);
 
 namespace Logger {
-
+    //Pre-post Build events 
 	static string GetShaderData(string shaderName) {
 		std::filesystem::path directoryPath = std::filesystem::current_path().parent_path().parent_path().parent_path();
 		string fullPath = directoryPath.generic_string() + "/Engine/src/HLSL/" + shaderName + ".hlsl";
@@ -62,3 +62,9 @@ namespace Logger {
         return path;
     }
 }
+
+
+/*
+    std::cout << argumentValue[0] << std::endl;
+    Absolute Path of Exe
+*/

@@ -2,14 +2,13 @@
 
 int main(int argumentC, char** argumentValue) {
 
-	Engine::Window* AppWindow = new Engine::Window(600, 600);
+	std::unique_ptr<Engine::Window> AppWindow = std::make_unique<Engine::Window>(600,600);
 
 	AppWindow->Initialize();
 	while (AppWindow->bIsRunning)
 		AppWindow->Run();
 	AppWindow->Exit();
 
-	delete AppWindow;
 
 	return 0;
 }
