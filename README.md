@@ -5,17 +5,20 @@ graphics API.
 
 ChibiPot Engine will only run a single static scene with no input.
 
-### Workflow
+## Workflow
 
+### Initials
 - [x] Window
-- [x] DX DeviceContext
-- [x] Swapchain
-- [x] Render Target View
+- [x] DX Essentials (Device, Context, Swapchain & Render Target View)
 - [x] Pixel Shader
 - [x] Vertex Shader
 - [x] Input Layout
+
+### Mesh Architectures
 - [x] Basic Model System
 - [ ] Sprite Model System
+
+### Scene Components
 - [ ] Tile Atlas
 - [ ] Scene
 
