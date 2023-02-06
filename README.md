@@ -13,7 +13,8 @@ ChibiPot Engine will only run a single static scene with no input.
 - [x] Render Target View
 - [x] Pixel Shader
 - [x] Vertex Shader
-- [ ] Input Layout
+- [x] Input Layout
+- [x] Basic Model System
 - [ ] Sprite Model System
 - [ ] Tile Atlas
 - [ ] Scene
