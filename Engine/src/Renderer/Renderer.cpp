@@ -218,7 +218,7 @@ bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob>& Blob)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
 	HRESULT hr = m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_VertexShader);
-
+	
 	if (FAILED(hr))
 	{
 		CONSOLE_LOG(CB_Error, "Failed to create vertex shader.");
