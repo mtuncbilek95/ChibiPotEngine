@@ -86,7 +86,6 @@ void Model::InitializeModel()
 
 void Model::UpdateModel(float DeltaTime)
 {
-	dxContext->DrawIndexed(indices.size(), 0u, 0u);
 }
 
 uint16 Model::GetIndicesCount()
