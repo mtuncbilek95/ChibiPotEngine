@@ -17,38 +17,7 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	indices.push_back(3);
 	indices.push_back(1);
 
-	InitializeModel();
-
-	// #pragma region "Constant Buffer"
-
-	//     D3D11_BUFFER_DESC ConstantBufferDesc = {};
-	//     ConstantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//     ConstantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//     ConstantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//     ConstantBufferDesc.MiscFlags = 0;
-	//     ConstantBufferDesc.ByteWidth = sizeof(cbMatrix);
-	//     ConstantBufferDesc.StructureByteStride = 0;
-
-	//     D3D11_SUBRESOURCE_DATA ConstantResourceData = {};
-	//     ConstantResourceData.pSysMem = &cbMatrix;
-
-	//     DevicePtr->CreateBuffer(&ConstantBufferDesc, &ConstantResourceData, &ConstantBuffer);
-	//     ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
-
-	// #pragma endregion
-}
-
-Model::~Model()
-{
-	m_VertexShader.Reset();
-	m_PixelShader.Reset();
-
-	m_VertexBuffer.Reset();
-	m_IndexBuffer.Reset();
-}
-
-void Model::InitializeModel()
-{
+	/////////////// Vertex Buffer ///////////////
 
 	D3D11_BUFFER_DESC VertexBufferDesc = {};
 	VertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -62,6 +31,8 @@ void Model::InitializeModel()
 	VertexResourceData.pSysMem = (void*)vertices.data();
 
 	dxDevice->CreateBuffer(&VertexBufferDesc, &VertexResourceData, &m_VertexBuffer);
+
+	/////////////// Index Buffer ///////////////
 
 	D3D11_BUFFER_DESC IndexBufferDesc = {};
 	IndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -77,16 +48,54 @@ void Model::InitializeModel()
 
 	dxDevice->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &m_IndexBuffer);
 
+	/////////////// Constant Buffer ///////////////
+
+	//     D3D11_BUFFER_DESC ConstantBufferDesc = {};
+	//     ConstantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//     ConstantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	//     ConstantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	//     ConstantBufferDesc.MiscFlags = 0;
+	//     ConstantBufferDesc.ByteWidth = sizeof(cbMatrix);
+	//     ConstantBufferDesc.StructureByteStride = 0;
+
+	//     D3D11_SUBRESOURCE_DATA ConstantResourceData = {};
+	//     ConstantResourceData.pSysMem = &cbMatrix;
+
+	//     DevicePtr->CreateBuffer(&ConstantBufferDesc, &ConstantResourceData, &ConstantBuffer);
+
+}
+
+Model::~Model()
+{
+	m_VertexShader.Reset();
+	m_PixelShader.Reset();
+
+	m_VertexBuffer.Reset();
+	m_IndexBuffer.Reset();
+}
+
+void Model::InitializeModel()
+{
 	const uint32 stride = sizeof(VertexData);
 	const uint32 offset = 0u;
 
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	//     ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
+}
+
+
+void Model::LoadSpriteImage(string imageName)
+{
+	int imageWidth{}, imageHeight{}, imageChannels{}, imageDesiredChannels{ 4 };
+	string filePath = Logger::GetInitialDir() + "/Game-Resource/King/" + imageName;
+	byte* ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
+
+	int imagePitch = imageWidth * 4;	
 }
 
 void Model::UpdateModel(float DeltaTime)
 {
-	dxContext->DrawIndexed(indices.size(), 0u, 0u);
 }
 
 uint16 Model::GetIndicesCount()

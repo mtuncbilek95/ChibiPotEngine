@@ -1,10 +1,14 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
-
 #include <Assets/ModelData.h>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+
 class Model {
+
 public:
 	Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device);
 
@@ -14,10 +18,12 @@ public:
 
 	void UpdateModel(float DeltaTime);
 	uint16 GetIndicesCount();
+
 protected:
 	void InitializeModel();
+	// Idle-0001.png
+	void LoadSpriteImage(string imageName = "Idle-0001.png");
 
-private:
 	ComPtr<ID3D11VertexShader> m_VertexShader;
 	ComPtr<ID3D11PixelShader> m_PixelShader;
 

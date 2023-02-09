@@ -55,9 +55,9 @@ namespace Logger {
         }
 	}
 
-    static string GetCurrentDir()
+    static string GetInitialDir()
     {
-        std::filesystem::path directoryPath = std::filesystem::current_path();
+        std::filesystem::path directoryPath = std::filesystem::current_path().parent_path().parent_path().parent_path();
         string path = directoryPath.generic_string();
         return path;
     }
