@@ -9,6 +9,5 @@ int main(int argumentC, char** argumentValue) {
 		AppWindow->Run();
 	AppWindow->Exit();
 
-
 	return 0;
 }

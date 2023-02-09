@@ -1,5 +1,5 @@
 #include "Renderer.h"
-
+#include <Logger/Logger.h>
 #include <Assets/ModelData.h>
 
 Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), 
@@ -38,8 +38,8 @@ bool Engine::Renderer::Initialize(const HWND handle)
 		return false;
 	if (!CreateInputLayout(Blob))
 		return false;
-
-	CreateInputAssembler();
+	if (!CreateInputAssembler())
+		return false;
 
 	Model* king = new Model(m_Context, m_Device);
 
@@ -259,6 +259,7 @@ bool Engine::Renderer::CreateInputAssembler()
 	m_Context->IASetInputLayout(m_InputLayout.Get());
 	m_Context->OMSetRenderTargets(1u, m_RenderTargetView.GetAddressOf(), nullptr);
 	m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	return true;
 }
 

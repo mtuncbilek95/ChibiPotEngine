@@ -7,6 +7,5 @@ project("ChibiPot Engine")
 
 # Include sub-projects.
 add_subdirectory ("Third-Party/DirectX")
-add_subdirectory ("Third-Party/STBI")
 add_subdirectory ("Engine")
 

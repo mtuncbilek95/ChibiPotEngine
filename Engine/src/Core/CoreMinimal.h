@@ -1,3 +1,5 @@
+#pragma once 
+
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
@@ -12,8 +14,6 @@
 
 #include <wrl.h>
 
-#include <Logger/Logger.h>
-
 using std::string;
 using namespace Microsoft::WRL;
 using namespace DirectX;
@@ -26,3 +26,5 @@ typedef unsigned char		uint8, byte;
 typedef unsigned short		uint16;
 typedef unsigned int		uint32;
 typedef unsigned long		uint64;
+
+#define FLT_MAX          3.402823466e+38F

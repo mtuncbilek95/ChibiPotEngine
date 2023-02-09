@@ -1,5 +1,6 @@
 #include "Window.h"
 
+#include <Logger/Logger.h>
 #include <Resources/Resource.h>
 
 Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
