@@ -3,10 +3,18 @@
 
 struct VertexData {
 	XMFLOAT3 VertexPoint;
+	XMFLOAT2 UV;
 	XMCOLOR4 Color;
+
 };
 
 struct ConstantBuffer
 {
-	XMMATRIX transform;
+	XMMATRIX Transform;
+};
+
+struct ModelMatrix {
+	XMMATRIX WorldMatrix;
+	XMMATRIX ViewMatrix;
+	XMMATRIX ProjectionMatrix;
 };

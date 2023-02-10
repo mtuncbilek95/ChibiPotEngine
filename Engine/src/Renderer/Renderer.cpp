@@ -237,7 +237,8 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
 		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12u, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"UV", 0, DXGI_FORMAT_R8G8_UNORM, 0,12u, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 20u, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, (uint32)std::size(inputElementDesc),

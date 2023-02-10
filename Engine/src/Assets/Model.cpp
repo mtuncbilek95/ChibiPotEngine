@@ -10,10 +10,10 @@ Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device)
 {
 	/////////////// Square Initialization ///////////////
 
-	vertices.push_back({{-0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}});
-	vertices.push_back({{0.5f, -0.5f, 1.0f}, {251, 183, 192, 255}});
-	vertices.push_back({{-0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}});
-	vertices.push_back({{0.5f, 0.5f, 1.0f}, {251, 183, 192, 255}});
+	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1}, {251, 183, 192, 255} });
+	vertices.push_back({{0.5f, -0.5f, 1.0f}, {1,1}, {251, 183, 192, 255}});
+	vertices.push_back({{-0.5f, 0.5f, 1.0f}, {0,0}, {251, 183, 192, 255}});
+	vertices.push_back({{0.5f, 0.5f, 1.0f}, {1,0}, {251, 183, 192, 255}});
 
 	indices.push_back(0);
 	indices.push_back(2);
@@ -53,6 +53,7 @@ Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device)
 
 	dxDevice->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &m_IndexBuffer);
 
+	InitializeModel();
 	/////////////// Constant Buffer ///////////////
 
 	//     D3D11_BUFFER_DESC ConstantBufferDesc = {};
