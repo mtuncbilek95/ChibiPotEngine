@@ -16,7 +16,7 @@ public:
 	uint16 GetIndicesCount();
 
 protected:
-	void InitializeModel(string imageName = "Sprite-0002.png");
+	void InitializeModel(string imageName = "Idle-0001.png");
 	bool LoadSpriteImage(string imageName);
 
 	ComPtr<ID3D11VertexShader> m_VertexShader;
@@ -27,7 +27,9 @@ protected:
 
 	ComPtr<ID3D11Texture2D> m_TextureBuffer;
 	ComPtr<ID3D11ShaderResourceView> m_ShaderResourceView;
+
 	ComPtr<ID3D11SamplerState> m_SamplerState;
+	ComPtr<ID3D11BlendState> m_BlendState;
 
 	std::vector<VertexData> vertices;
 	std::vector<uint16> indices;

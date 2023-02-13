@@ -75,7 +75,7 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Warning, "Failed to create the D3D11 Device.");
+		CONSOLE_LOG(CB_Error, "Failed to create the D3D11 Device.");
 		return false;
 	}
 
@@ -293,6 +293,7 @@ void Engine::Renderer::UpdateFrame(float DeltaTime)
 
 void Engine::Renderer::ClearFrame()
 {
+	//{ 0.25f, 0.22f, 0.32f, 1.0f }
 	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
 }

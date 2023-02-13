@@ -1,5 +1,5 @@
-Texture2D Tex2D;
-SamplerState SampleType;
+Texture2D Tex2D : register(t0);
+SamplerState SampleType : register(s0);
 
 struct pOut {
 	float4 pos : SV_POSITION;

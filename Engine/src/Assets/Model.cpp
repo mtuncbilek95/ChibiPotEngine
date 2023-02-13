@@ -6,14 +6,14 @@
 
 // Shader Resource View dipnot: its not data. its know how.
 
-Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device) : dxContext(Context), dxDevice(Device)
+Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device) : dxContext(Context), dxDevice(Device)
 {
 	/////////////// Square Initialization ///////////////
 
-	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1}});
-	vertices.push_back({{0.5f, -0.5f, 1.0f}, {1,1}});
-	vertices.push_back({{-0.5f, 0.5f, 1.0f}, {0,0}});
-	vertices.push_back({{0.5f, 0.5f, 1.0f}, {1,0}});
+	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1} });
+	vertices.push_back({ {0.5f, -0.5f, 1.0f}, {1,1} });
+	vertices.push_back({ {-0.5f, 0.5f, 1.0f}, {0,0} });
+	vertices.push_back({ {0.5f, 0.5f, 1.0f}, {1,0} });
 
 	indices.push_back(0);
 	indices.push_back(2);
@@ -33,7 +33,7 @@ Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device)
 	VertexBufferDesc.StructureByteStride = sizeof(VertexData);
 
 	D3D11_SUBRESOURCE_DATA VertexResourceData = {};
-	VertexResourceData.pSysMem = (void *)vertices.data();
+	VertexResourceData.pSysMem = (void*)vertices.data();
 
 	dxDevice->CreateBuffer(&VertexBufferDesc, &VertexResourceData, &m_VertexBuffer);
 
@@ -49,7 +49,7 @@ Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device)
 	IndexBufferDesc.StructureByteStride = sizeof(uint16);
 
 	D3D11_SUBRESOURCE_DATA IndexResourceData = {};
-	IndexResourceData.pSysMem = (void *)indices.data();
+	IndexResourceData.pSysMem = (void*)indices.data();
 
 	dxDevice->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &m_IndexBuffer);
 
@@ -88,16 +88,17 @@ void Model::InitializeModel(string imageName)
 
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-	dxContext->PSSetShaderResources(0u, 1u, m_ShaderResourceView.GetAddressOf());
 	dxContext->PSSetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
-	//     ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
+	dxContext->PSSetShaderResources(0u, 1u, m_ShaderResourceView.GetAddressOf());
+	dxContext->OMSetBlendState(m_BlendState.Get(), nullptr, D3D11_APPEND_ALIGNED_ELEMENT);
+	//ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
 }
 
 bool Model::LoadSpriteImage(string imageName)
 {
-	int imageWidth{}, imageHeight{}, imageChannels{}, imageDesiredChannels{4};
+	int imageWidth{}, imageHeight{}, imageChannels{}, imageDesiredChannels{ 4 };
 	string filePath = Logger::GetInitialDir() + "/Game-Resource/King/" + imageName;
-	byte *ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
+	const byte* ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
 
 	int imagePitch = imageWidth * 4 * sizeof(byte);
 
@@ -109,7 +110,7 @@ bool Model::LoadSpriteImage(string imageName)
 	TextureBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	TextureBufferDesc.SampleDesc.Count = 1;
 	TextureBufferDesc.SampleDesc.Quality = 0;
-	TextureBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	TextureBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	D3D11_SUBRESOURCE_DATA TextureResourceData{};
@@ -126,11 +127,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	CONSOLE_LOG(CB_Success, "Texture has been created successfully.");
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc {};
+	D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc{};
 	ShaderDesc.Format = TextureBufferDesc.Format;
 	ShaderDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	ShaderDesc.Texture2D.MostDetailedMip = 0;
-	ShaderDesc.Texture2D.MipLevels = 1;
+	ShaderDesc.Texture2D.MipLevels = -1;
 
 	hr = dxDevice->CreateShaderResourceView(m_TextureBuffer.Get(), &ShaderDesc, &m_ShaderResourceView);
 
@@ -147,16 +148,16 @@ bool Model::LoadSpriteImage(string imageName)
 	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	SamplerDesc.MipLODBias = 0.0f;
+	SamplerDesc.MipLODBias = 1.0f;
 	SamplerDesc.MaxAnisotropy = 1;
-	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
 
-	for (auto &el : SamplerDesc.BorderColor)
+	for (auto& el : SamplerDesc.BorderColor)
 	{
 		el = 0.0f;
 	}
 
-	SamplerDesc.MinLOD = -D3D11_FLOAT32_MAX;
+	SamplerDesc.MinLOD = 0;
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
@@ -168,6 +169,32 @@ bool Model::LoadSpriteImage(string imageName)
 	}
 
 	CONSOLE_LOG(CB_Success, "Sampler State has been created successfully.");
+
+	D3D11_BLEND_DESC blendDesc{};
+	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
+
+	renderTargetBlendDesc.BlendEnable = true;
+	renderTargetBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	renderTargetBlendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	renderTargetBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+	renderTargetBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+	renderTargetBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.RenderTarget[0] = renderTargetBlendDesc;
+	blendDesc.IndependentBlendEnable = true;
+	blendDesc.AlphaToCoverageEnable = false;
+
+	hr = dxDevice->CreateBlendState(&blendDesc, &m_BlendState);
+
+	if (FAILED(hr))
+	{
+		CONSOLE_LOG(CB_Error, "Failed to create Blend State.");
+		return false;
+	}
+
+	CONSOLE_LOG(CB_Success, "Blend State has been created successfully.");
 
 	return true;
 }
