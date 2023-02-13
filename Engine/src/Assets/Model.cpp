@@ -89,7 +89,7 @@ void Model::InitializeModel(string imageName)
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	dxContext->PSSetShaderResources(0u, 1u, m_ShaderResourceView.GetAddressOf());
-	dxContext->PSGetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
+	dxContext->PSSetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
 	//     ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
 }
 
@@ -99,17 +99,17 @@ bool Model::LoadSpriteImage(string imageName)
 	string filePath = Logger::GetInitialDir() + "/Game-Resource/King/" + imageName;
 	byte *ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
 
-	int imagePitch = imageWidth * 4;
+	int imagePitch = imageWidth * 4 * sizeof(byte);
 
 	D3D11_TEXTURE2D_DESC TextureBufferDesc{};
 	TextureBufferDesc.Width = imageWidth;
 	TextureBufferDesc.Height = imageHeight;
 	TextureBufferDesc.MipLevels = 1;
 	TextureBufferDesc.ArraySize = 1;
-	TextureBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	TextureBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	TextureBufferDesc.SampleDesc.Count = 1;
 	TextureBufferDesc.SampleDesc.Quality = 0;
-	TextureBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	TextureBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	TextureBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	D3D11_SUBRESOURCE_DATA TextureResourceData{};
@@ -143,10 +143,10 @@ bool Model::LoadSpriteImage(string imageName)
 	CONSOLE_LOG(CB_Success, "Shader Resource View has been created successfully.");
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
-	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	SamplerDesc.MipLODBias = 0.0f;
 	SamplerDesc.MaxAnisotropy = 1;
 	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
@@ -156,7 +156,7 @@ bool Model::LoadSpriteImage(string imageName)
 		el = 0.0f;
 	}
 
-	SamplerDesc.MinLOD = 0;
+	SamplerDesc.MinLOD = -D3D11_FLOAT32_MAX;
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
