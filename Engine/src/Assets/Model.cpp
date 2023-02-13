@@ -143,18 +143,20 @@ bool Model::LoadSpriteImage(string imageName)
 	CONSOLE_LOG(CB_Success, "Shader Resource View has been created successfully.");
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
-	SamplerDesc.Filter = D3D11_FILTER_MAXIMUM_ANISOTROPIC;
+	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-	SamplerDesc.MipLODBias = 1.0f;
+	SamplerDesc.MipLODBias = 0.0f;
 	SamplerDesc.MaxAnisotropy = 1;
 	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+
 	for (auto &el : SamplerDesc.BorderColor)
 	{
-		el = 1.0f;
+		el = 0.0f;
 	}
-	SamplerDesc.MinLOD = -D3D11_FLOAT32_MAX;
+
+	SamplerDesc.MinLOD = 0;
 	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
