@@ -10,10 +10,10 @@ Model::Model(ComPtr<ID3D11DeviceContext> &Context, ComPtr<ID3D11Device> &Device)
 {
 	/////////////// Square Initialization ///////////////
 
-	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1}, {251, 183, 192, 255} });
-	vertices.push_back({{0.5f, -0.5f, 1.0f}, {1,1}, {251, 183, 192, 255}});
-	vertices.push_back({{-0.5f, 0.5f, 1.0f}, {0,0}, {251, 183, 192, 255}});
-	vertices.push_back({{0.5f, 0.5f, 1.0f}, {1,0}, {251, 183, 192, 255}});
+	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1}});
+	vertices.push_back({{0.5f, -0.5f, 1.0f}, {1,1}});
+	vertices.push_back({{-0.5f, 0.5f, 1.0f}, {0,0}});
+	vertices.push_back({{0.5f, 0.5f, 1.0f}, {1,0}});
 
 	indices.push_back(0);
 	indices.push_back(2);
@@ -113,7 +113,7 @@ bool Model::LoadSpriteImage(string imageName)
 	TextureBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	D3D11_SUBRESOURCE_DATA TextureResourceData{};
-	TextureResourceData.pSysMem = (void *)ImageData;
+	TextureResourceData.pSysMem = ImageData;
 	TextureResourceData.SysMemPitch = imagePitch;
 
 	HRESULT hr = dxDevice->CreateTexture2D(&TextureBufferDesc, &TextureResourceData, &m_TextureBuffer);
@@ -126,7 +126,13 @@ bool Model::LoadSpriteImage(string imageName)
 
 	CONSOLE_LOG(CB_Success, "Texture has been created successfully.");
 
-	hr = dxDevice->CreateShaderResourceView(m_TextureBuffer.Get(), nullptr, &m_ShaderResourceView);
+	D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc {};
+	ShaderDesc.Format = TextureBufferDesc.Format;
+	ShaderDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	ShaderDesc.Texture2D.MostDetailedMip = 0;
+	ShaderDesc.Texture2D.MipLevels = 1;
+
+	hr = dxDevice->CreateShaderResourceView(m_TextureBuffer.Get(), &ShaderDesc, &m_ShaderResourceView);
 
 	if (FAILED(hr))
 	{
@@ -137,7 +143,7 @@ bool Model::LoadSpriteImage(string imageName)
 	CONSOLE_LOG(CB_Success, "Shader Resource View has been created successfully.");
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
-	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	SamplerDesc.Filter = D3D11_FILTER_MAXIMUM_ANISOTROPIC;
 	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
 	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
@@ -148,8 +154,8 @@ bool Model::LoadSpriteImage(string imageName)
 	{
 		el = 1.0f;
 	}
-	SamplerDesc.MinLOD = -FLT_MAX;
-	SamplerDesc.MaxLOD = FLT_MAX;
+	SamplerDesc.MinLOD = -D3D11_FLOAT32_MAX;
+	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
 

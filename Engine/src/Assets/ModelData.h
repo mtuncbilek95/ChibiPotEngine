@@ -4,8 +4,6 @@
 struct VertexData {
 	XMFLOAT3 VertexPoint;
 	XMFLOAT2 UV;
-	XMCOLOR4 Color;
-
 };
 
 struct ConstantBuffer

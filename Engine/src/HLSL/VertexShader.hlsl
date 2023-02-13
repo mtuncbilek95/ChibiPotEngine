@@ -1,15 +1,26 @@
-struct vOut
+struct pOut
 {
-	float3 color : Color;
-	float2 uv: UV;
 	float4 pos : SV_Position;
+	float2 tex: TEXCOORD0;
 };
 
-vOut main(float3 pos : Position, float2 uv : UV,  float3 color : Color)
+struct vOut {
+	float3 pos : POSITION;
+	float2 tex : TEXCOORD0;
+};
+
+//cbuffer MatrixBuffer
+//{
+//	matrix worldMatrix;
+//	matrix viewMatrix;
+//	matrix projectionMatrix;
+//};
+
+pOut main(vOut input)
 {
-	vOut vso;
-	vso.pos = float4(pos, 1.0f);
-	vso.uv = uv;
-	vso.color = color;
+	pOut vso;
+	vso.pos = float4(input.pos, 1.0f);
+	vso.tex = input.tex;
+
 	return vso;
 }

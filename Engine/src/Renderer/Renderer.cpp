@@ -78,6 +78,7 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 		CONSOLE_LOG(CB_Warning, "Failed to create the D3D11 Device.");
 		return false;
 	}
+
 	CONSOLE_LOG(CB_Success, "D3D11 Device has been successfully created.");
 
 	return true;
@@ -85,6 +86,10 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 
 bool Engine::Renderer::CreateSwapChain(const HWND handle)
 {
+
+#pragma region "Swapchain Description"
+
+	HRESULT hr;
 	DXGI_SWAP_CHAIN_DESC swapChainDesc{};
 
 	//  Swap chain figures out the size of the window by checking window handle
@@ -114,15 +119,22 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
+#pragma endregion
+
+#pragma region "Swapchain Order Creation"
+
+	// Device Creation on DXGI
 	ComPtr<IDXGIDevice> dxgiDevice;
 
-	HRESULT hr = m_Device.As(&dxgiDevice);
+	hr = m_Device.As(&dxgiDevice);
+
 	if (FAILED(hr))
 	{
 		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Device.");
 		return false;
 	}
 
+	// Adapter Creation on DXGI
 	ComPtr<IDXGIAdapter> dxgiAdapter;
 
 	hr = dxgiDevice.Get()->GetParent(IID_PPV_ARGS(dxgiAdapter.GetAddressOf()));
@@ -133,6 +145,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
+	// Method Implementation on DXGI
 	ComPtr<IDXGIFactory> dxgiFactory;
 
 	hr = dxgiAdapter.Get()->GetParent(IID_PPV_ARGS(dxgiFactory.GetAddressOf()));
@@ -143,6 +156,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
+	// Swapchain creation on DXGI
 	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, &m_SwapChain);
 
 	if (FAILED(hr))
@@ -153,16 +167,18 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	CONSOLE_LOG(CB_Success, "Swapchain has been successfully created.");
 
+#pragma endregion
+
 	return true;
 }
 
 bool Engine::Renderer::CreateRenderTargetView()
 {
 	ComPtr<ID3D11Texture2D> backBuffer;
-
 	D3D11_RENDER_TARGET_VIEW_DESC targetViewDesc{};
+	HRESULT hr;
 
-	HRESULT hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
+	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
 		CONSOLE_LOG(CB_Error, "Failed to get the Backbuffer.");
@@ -236,9 +252,8 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
-		{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R8G8_UNORM, 0,12u, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 20u, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
 	};
 
 	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, (uint32)std::size(inputElementDesc),
