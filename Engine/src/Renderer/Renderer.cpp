@@ -75,11 +75,11 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create the D3D11 Device.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create the D3D11 Device.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "D3D11 Device has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "D3D11 Device has been successfully created.");
 
 	return true;
 }
@@ -130,7 +130,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Device.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Device.");
 		return false;
 	}
 
@@ -141,7 +141,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Adapter.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Adapter.");
 		return false;
 	}
 
@@ -152,7 +152,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to get the DXGI Factory.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Factory.");
 		return false;
 	}
 
@@ -161,11 +161,11 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Swapchain.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Swapchain.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Swapchain has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Swapchain has been successfully created.");
 
 #pragma endregion
 
@@ -181,18 +181,18 @@ bool Engine::Renderer::CreateRenderTargetView()
 	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to get the Backbuffer.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the Backbuffer.");
 		return false;
 	}
 
 	hr = m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Render Target View.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Render Target View.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Render Target View has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Render Target View has been successfully created.");
 	return true;
 }
 
@@ -212,13 +212,13 @@ bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob>& Blob)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create pixel shader.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create pixel shader.");
 		return false;
 	}
 
 	m_Context->PSSetShader(m_PixelShader.Get(), nullptr, 0u);
 
-	CONSOLE_LOG(CB_Success, "Pixel Shader has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Pixel Shader has been successfully created.");
 	return true;
 }
 
@@ -237,13 +237,13 @@ bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob>& Blob)
 	
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create vertex shader.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create vertex shader.");
 		return false;
 	}
 
 	m_Context->VSSetShader(m_VertexShader.Get(), nullptr, 0u);
 
-	CONSOLE_LOG(CB_Success, "Vertex Shader has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Vertex Shader has been successfully created.");
 
 	return true;
 }
@@ -261,11 +261,11 @@ bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Input Layout");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Input Layout");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Input Layout has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Input Layout has been successfully created.");
 	return true;
 }
 

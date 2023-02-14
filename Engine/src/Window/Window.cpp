@@ -40,7 +40,7 @@ void Engine::Window::Initialize()
 		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 
 	if (m_windowHandle != nullptr) {
-		CONSOLE_LOG(CB_Success, "Window has been successfully created.");
+		Logger::PrintLog(Logger::PrintType::Success,  "Window has been successfully created.");
 		ShowWindow(m_windowHandle, SW_SHOW);
 	}
 
@@ -113,7 +113,7 @@ void Engine::Window::CalculateFrameRate(float DeltaTime)
 		string fpsStr = std::to_string(static_cast<int>(fps));
 
 		string windowText = m_windowName + " FPS: " + fpsStr;
-		CONSOLE_LOG(CB_Display, "%s", windowText.c_str());
+		Logger::PrintLog(Logger::PrintType::Display, windowText);
 		counter = 0.0f;
 	}
 }

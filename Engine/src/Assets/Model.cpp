@@ -121,11 +121,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Texture.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Texture.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Texture has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Texture has been created successfully.");
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc{};
 	ShaderDesc.Format = TextureBufferDesc.Format;
@@ -137,11 +137,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Shader Resource View.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Shader Resource View.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Shader Resource View has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Shader Resource View has been created successfully.");
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
 	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -164,11 +164,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Sampler State.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Sampler State.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Sampler State has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Sampler State has been created successfully.");
 
 	D3D11_BLEND_DESC blendDesc{};
 	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
@@ -190,11 +190,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		CONSOLE_LOG(CB_Error, "Failed to create Blend State.");
+		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Blend State.");
 		return false;
 	}
 
-	CONSOLE_LOG(CB_Success, "Blend State has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success,  "Blend State has been created successfully.");
 
 	return true;
 }

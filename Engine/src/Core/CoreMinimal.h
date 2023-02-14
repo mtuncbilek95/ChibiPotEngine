@@ -26,5 +26,3 @@ typedef unsigned char		uint8, byte;
 typedef unsigned short		uint16;
 typedef unsigned int		uint32;
 typedef unsigned long		uint64;
-
-#define FLT_MAX          3.402823466e+38F

@@ -8,7 +8,7 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/Window/Window.cpp" "src/Renderer/Renderer.cpp" 
 "src/GameTimer/GameTimer.cpp"
 "src/Assets/Model.cpp" 
-)
+"src/Assets/Sprite/SpriteComponent.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Engine/src")
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Third-Party/DirectX/include")
