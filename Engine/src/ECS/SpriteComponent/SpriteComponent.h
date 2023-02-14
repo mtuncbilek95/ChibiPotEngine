@@ -5,12 +5,11 @@
 class SpriteComponent {
 
 public:
-	SpriteComponent() = delete;
-	SpriteComponent()
+	SpriteComponent() = default;
 
 public:
 	virtual ~SpriteComponent();
-	virtual void DrawSprite();
+	virtual void InitializeSprite();
 	virtual void PlayAnimation();
 
 protected:

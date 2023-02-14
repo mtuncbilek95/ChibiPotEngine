@@ -85,7 +85,7 @@ void Model::InitializeModel(string imageName)
 
 	const uint32 stride = sizeof(VertexData);
 	const uint32 offset = 0u;
-
+	
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	dxContext->PSSetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
@@ -119,8 +119,7 @@ bool Model::LoadSpriteImage(string imageName)
 
 	HRESULT hr = dxDevice->CreateTexture2D(&TextureBufferDesc, &TextureResourceData, &m_TextureBuffer);
 
-	if (FAILED(hr))
-	{
+	if (FAILED(hr)) {
 		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Texture.");
 		return false;
 	}

@@ -30,7 +30,7 @@ ChibiPot Engine will only run a single static scene with no input for its initia
 In my opinion, the best approach on using a seperated tick system is creating an Interface which interact with whole Engine Window/Renderer structure which is inspirated. For starter, we can create a class like below.
 
 ```cpp
-class SystemOutliner {
+class GameConductor {
 public:
 	virtual void Start() = 0;
 	virtual void Tick(float DeltaTime) = 0;
