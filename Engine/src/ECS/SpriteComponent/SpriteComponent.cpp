@@ -7,7 +7,3 @@ SpriteComponent::~SpriteComponent()
 void SpriteComponent::InitializeSprite()
 {
 }
-
-void SpriteComponent::PlayAnimation()
-{
-}

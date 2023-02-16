@@ -6,11 +6,6 @@ struct VertexData {
 	XMFLOAT2 UV;
 };
 
-struct ConstantBuffer
-{
-	XMMATRIX Transform;
-};
-
 struct ModelMatrix {
 	XMMATRIX WorldMatrix;
 	XMMATRIX ViewMatrix;

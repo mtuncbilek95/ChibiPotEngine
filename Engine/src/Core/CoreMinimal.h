@@ -10,13 +10,14 @@
 
 #include <d3dcompiler.h>
 #include <d3d11.h>
-#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
 
 #include <wrl.h>
 
 using std::string;
 using namespace Microsoft::WRL;
 using namespace DirectX;
+using namespace DirectX::PackedVector;
 
 typedef signed char			int8;
 typedef signed short		int16;

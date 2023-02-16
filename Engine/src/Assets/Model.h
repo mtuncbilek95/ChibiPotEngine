@@ -17,6 +17,7 @@ public:
 
 protected:
 	void InitializeModel(string imageName = "Idle-0001.png");
+	bool InitializeStates();
 	bool LoadSpriteImage(string imageName);
 
 	ComPtr<ID3D11VertexShader> m_VertexShader;

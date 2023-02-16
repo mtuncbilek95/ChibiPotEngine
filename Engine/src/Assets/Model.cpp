@@ -94,10 +94,71 @@ void Model::InitializeModel(string imageName)
 	//ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
 }
 
+bool Model::InitializeStates()
+{
+	HRESULT hr;
+
+	D3D11_SAMPLER_DESC SamplerDesc{};
+	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
+	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	SamplerDesc.MipLODBias = 1.0f;
+	SamplerDesc.MaxAnisotropy = 1;
+	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+
+	for (auto& el : SamplerDesc.BorderColor)
+	{
+		el = 0.0f;
+	}
+
+	SamplerDesc.MinLOD = 0;
+	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
+
+	if (FAILED(hr))
+	{
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Sampler State.");
+		return false;
+	}
+
+	Logger::PrintLog(Logger::PrintType::Success, "Sampler State has been created successfully.");
+
+	D3D11_BLEND_DESC blendDesc{};
+	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
+
+	renderTargetBlendDesc.BlendEnable = true;
+	renderTargetBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	renderTargetBlendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	renderTargetBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+	renderTargetBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+	renderTargetBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.RenderTarget[0] = renderTargetBlendDesc;
+	blendDesc.IndependentBlendEnable = true;
+	blendDesc.AlphaToCoverageEnable = false;
+
+	hr = dxDevice->CreateBlendState(&blendDesc, &m_BlendState);
+
+	if (FAILED(hr))
+	{
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Blend State.");
+		return false;
+	}
+
+	Logger::PrintLog(Logger::PrintType::Success, "Blend State has been created successfully.");
+	
+	return true;
+}
+
 bool Model::LoadSpriteImage(string imageName)
 {
 	int imageWidth{}, imageHeight{}, imageChannels{}, imageDesiredChannels{ 4 };
 	string filePath = Logger::GetInitialDir() + "/Game-Resource/King/" + imageName;
+
 	const byte* ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
 
 	int imagePitch = imageWidth * 4 * sizeof(byte);
@@ -141,59 +202,6 @@ bool Model::LoadSpriteImage(string imageName)
 	}
 
 	Logger::PrintLog(Logger::PrintType::Success,  "Shader Resource View has been created successfully.");
-
-	D3D11_SAMPLER_DESC SamplerDesc{};
-	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
-	SamplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	SamplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	SamplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-	SamplerDesc.MipLODBias = 1.0f;
-	SamplerDesc.MaxAnisotropy = 1;
-	SamplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
-
-	for (auto& el : SamplerDesc.BorderColor)
-	{
-		el = 0.0f;
-	}
-
-	SamplerDesc.MinLOD = 0;
-	SamplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-	hr = dxDevice->CreateSamplerState(&SamplerDesc, &m_SamplerState);
-
-	if (FAILED(hr))
-	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Sampler State.");
-		return false;
-	}
-
-	Logger::PrintLog(Logger::PrintType::Success,  "Sampler State has been created successfully.");
-
-	D3D11_BLEND_DESC blendDesc{};
-	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
-
-	renderTargetBlendDesc.BlendEnable = true;
-	renderTargetBlendDesc.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-	renderTargetBlendDesc.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-	renderTargetBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
-	renderTargetBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
-	renderTargetBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
-	renderTargetBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	renderTargetBlendDesc.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-
-	blendDesc.RenderTarget[0] = renderTargetBlendDesc;
-	blendDesc.IndependentBlendEnable = true;
-	blendDesc.AlphaToCoverageEnable = false;
-
-	hr = dxDevice->CreateBlendState(&blendDesc, &m_BlendState);
-
-	if (FAILED(hr))
-	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Blend State.");
-		return false;
-	}
-
-	Logger::PrintLog(Logger::PrintType::Success,  "Blend State has been created successfully.");
 
 	return true;
 }
