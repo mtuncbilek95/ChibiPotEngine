@@ -208,6 +208,7 @@ bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob>& Blob)
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
+
 	HRESULT hr = m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader);
 
 	if (FAILED(hr))

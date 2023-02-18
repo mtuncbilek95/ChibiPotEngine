@@ -15,15 +15,16 @@ public:
 	void UpdateModel(float DeltaTime);
 	uint16 GetIndicesCount();
 
-protected:
-	void InitializeModel(string imageName = "Idle-0001.png");
-	bool LoadSpriteImage(string imageName);
-
 	ComPtr<ID3D11VertexShader> m_VertexShader;
 	ComPtr<ID3D11PixelShader> m_PixelShader;
 
+protected:
+	void InitializeModel(string imageName = "Idle (96x96).png");
+	bool LoadSpriteImage(string imageName);
+
 	ComPtr<ID3D11Buffer> m_VertexBuffer;
 	ComPtr<ID3D11Buffer> m_IndexBuffer;
+	ComPtr<ID3D11Buffer> m_ConstantBuffer;
 
 	ComPtr<ID3D11Texture2D> m_TextureBuffer;
 	ComPtr<ID3D11ShaderResourceView> m_ShaderResourceView;
@@ -39,4 +40,6 @@ private:
 	// Hiyerarside dxdevices en yukarda.
 	ComPtr<ID3D11DeviceContext>& dxContext;
 	ComPtr<ID3D11Device>& dxDevice;
+
+	ConstantBuffer constantBuffer;
 };

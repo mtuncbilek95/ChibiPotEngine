@@ -9,7 +9,7 @@ struct pOut {
 float4 main(pOut input) : SV_Target
 {
 	float4 texColor;
-	texColor = Tex2D.Sample(SampleType, input.tex);
+    texColor = Tex2D.Sample(SampleType, input.tex);
 
 	return texColor;
 }

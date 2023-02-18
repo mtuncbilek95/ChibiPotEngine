@@ -1,26 +1,26 @@
 struct pOut
 {
 	float4 pos : SV_Position;
-	float2 tex: TEXCOORD0;
+	float2 uv: TEXCOORD0;
 };
 
 struct vOut {
 	float3 pos : POSITION;
-	float2 tex : TEXCOORD0;
+	float2 uv : TEXCOORD0;
 };
 
-//cbuffer MatrixBuffer
-//{
-//	matrix worldMatrix;
-//	matrix viewMatrix;
-//	matrix projectionMatrix;
-//};
+cbuffer CBuffer
+{
+    float tilex;
+};
 
 pOut main(vOut input)
 {
 	pOut vso;
 	vso.pos = float4(input.pos, 1.0f);
-	vso.tex = input.tex;
+	vso.uv = input.uv;
+    
+    vso.uv.x += 6 * tilex;
 
 	return vso;
 }

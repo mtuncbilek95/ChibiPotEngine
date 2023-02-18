@@ -5,16 +5,18 @@
 class SpriteComponent {
 
 public:
-	SpriteComponent() = default;
+	SpriteComponent() = delete;
+	SpriteComponent(uint32 width, uint32 height);
 
 public:
-	virtual ~SpriteComponent();
-	virtual void InitializeSprite();
-	virtual void PlayAnimation();
+	virtual ~SpriteComponent() = default;
 
+	void InitializeSprite(string atlasPath = "/Game-Resource/King/Idle (96x96).png");
+	void PlayAnimation();
+
+	uint32 GetWidth();
+	uint32 GetHeight();
+	
 protected:
-	ComPtr<ID3D11BlendState> m_BlendState;
-	ComPtr<ID3D11SamplerState> m_SamplerState;
-
-	ComPtr<ID3D11Texture2D> m_TextureBuffer;
+	int32 spriteWidth, spriteHeight, totalWidth, totalHeight, tileSize;
 };

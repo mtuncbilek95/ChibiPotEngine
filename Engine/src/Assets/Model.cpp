@@ -11,9 +11,9 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	/////////////// Square Initialization ///////////////
 
 	vertices.push_back({ {-0.5f, -0.5f, 1.0f}, {0,1} });
-	vertices.push_back({ {0.5f, -0.5f, 1.0f}, {1,1} });
+	vertices.push_back({ {0.5f, -0.5f, 1.0f}, {0.1f,1} });
 	vertices.push_back({ {-0.5f, 0.5f, 1.0f}, {0,0} });
-	vertices.push_back({ {0.5f, 0.5f, 1.0f}, {1,0} });
+	vertices.push_back({ {0.5f, 0.5f, 1.0f}, {0.1f,0} });
 
 	indices.push_back(0);
 	indices.push_back(2);
@@ -22,6 +22,8 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	indices.push_back(3);
 	indices.push_back(1);
 
+	constantBuffer.tilex = 0.1f;
+
 	/////////////// Vertex Buffer ///////////////
 
 	D3D11_BUFFER_DESC VertexBufferDesc = {};
@@ -29,7 +31,7 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	VertexBufferDesc.CPUAccessFlags = 0;
 	VertexBufferDesc.MiscFlags = 0;
-	VertexBufferDesc.ByteWidth = sizeof(VertexData) * vertices.size(); // Need to fix this implementation
+	VertexBufferDesc.ByteWidth = sizeof(VertexData) * vertices.size();
 	VertexBufferDesc.StructureByteStride = sizeof(VertexData);
 
 	D3D11_SUBRESOURCE_DATA VertexResourceData = {};
@@ -44,7 +46,7 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	IndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	IndexBufferDesc.CPUAccessFlags = 0;
 	IndexBufferDesc.MiscFlags = 0;
-	IndexBufferDesc.ByteWidth = sizeof(uint16) * indices.size(); // Need to fix this implementation
+	IndexBufferDesc.ByteWidth = sizeof(uint16) * indices.size();
 
 	IndexBufferDesc.StructureByteStride = sizeof(uint16);
 
@@ -53,21 +55,22 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 
 	dxDevice->CreateBuffer(&IndexBufferDesc, &IndexResourceData, &m_IndexBuffer);
 
-	InitializeModel();
 	/////////////// Constant Buffer ///////////////
 
-	//     D3D11_BUFFER_DESC ConstantBufferDesc = {};
-	//     ConstantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	//     ConstantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//     ConstantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//     ConstantBufferDesc.MiscFlags = 0;
-	//     ConstantBufferDesc.ByteWidth = sizeof(cbMatrix);
-	//     ConstantBufferDesc.StructureByteStride = 0;
+	D3D11_BUFFER_DESC ConstantBufferDesc = {};
+	ConstantBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	ConstantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	ConstantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	ConstantBufferDesc.MiscFlags = 0;
+	ConstantBufferDesc.ByteWidth = sizeof(constantBuffer);
+	ConstantBufferDesc.StructureByteStride = 0;
 
-	//     D3D11_SUBRESOURCE_DATA ConstantResourceData = {};
-	//     ConstantResourceData.pSysMem = &cbMatrix;
+	D3D11_SUBRESOURCE_DATA ConstantResourceData = {};
+	ConstantResourceData.pSysMem = &constantBuffer;
 
-	//     DevicePtr->CreateBuffer(&ConstantBufferDesc, &ConstantResourceData, &ConstantBuffer);
+	dxDevice->CreateBuffer(&ConstantBufferDesc, &ConstantResourceData, &m_ConstantBuffer);
+
+	InitializeModel();
 }
 
 Model::~Model()
@@ -81,17 +84,18 @@ Model::~Model()
 
 void Model::InitializeModel(string imageName)
 {
-	LoadSpriteImage(imageName);
-
 	const uint32 stride = sizeof(VertexData);
 	const uint32 offset = 0u;
-	
+
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	dxContext->VSSetConstantBuffers(0, 1u, m_ConstantBuffer.GetAddressOf());
+	
+	LoadSpriteImage(imageName);
+
 	dxContext->PSSetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
 	dxContext->PSSetShaderResources(0u, 1u, m_ShaderResourceView.GetAddressOf());
 	dxContext->OMSetBlendState(m_BlendState.Get(), nullptr, D3D11_APPEND_ALIGNED_ELEMENT);
-	//ContextPtr->VSSetConstantBuffers(0, 1u, ConstantBuffer.GetAddressOf());
 }
 
 bool Model::LoadSpriteImage(string imageName)
@@ -120,11 +124,11 @@ bool Model::LoadSpriteImage(string imageName)
 	HRESULT hr = dxDevice->CreateTexture2D(&TextureBufferDesc, &TextureResourceData, &m_TextureBuffer);
 
 	if (FAILED(hr)) {
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Texture.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Texture.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Texture has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success, "Texture has been created successfully.");
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc{};
 	ShaderDesc.Format = TextureBufferDesc.Format;
@@ -136,11 +140,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Shader Resource View.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Shader Resource View.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Shader Resource View has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success, "Shader Resource View has been created successfully.");
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
 	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -163,11 +167,11 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Sampler State.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Sampler State.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Sampler State has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success, "Sampler State has been created successfully.");
 
 	D3D11_BLEND_DESC blendDesc{};
 	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
@@ -189,17 +193,23 @@ bool Model::LoadSpriteImage(string imageName)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Blend State.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Blend State.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Blend State has been created successfully.");
+	Logger::PrintLog(Logger::PrintType::Success, "Blend State has been created successfully.");
 
 	return true;
 }
 
 void Model::UpdateModel(float DeltaTime)
 {
+	//constantBuffer.TilePoint = { 0.1f,1 };
+
+	//D3D11_MAPPED_SUBRESOURCE cbSubresource{};
+	//dxContext->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &cbSubresource);
+	//memcpy(cbSubresource.pData, &constantBuffer, sizeof(constantBuffer));
+	//dxContext->Unmap(m_ConstantBuffer.Get(), 0);
 }
 
 uint16 Model::GetIndicesCount()

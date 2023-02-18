@@ -8,7 +8,7 @@ struct VertexData {
 
 struct ConstantBuffer
 {
-	XMMATRIX Transform;
+	float tilex;
 };
 
 struct ModelMatrix {
