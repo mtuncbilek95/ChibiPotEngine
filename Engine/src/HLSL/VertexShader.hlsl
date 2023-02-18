@@ -11,7 +11,9 @@ struct vOut {
 
 cbuffer CBuffer
 {
-    float tilex;
+    float2 tileIndex;
+    float columnCount;
+    float rowCount;
 };
 
 pOut main(vOut input)
@@ -20,7 +22,12 @@ pOut main(vOut input)
 	vso.pos = float4(input.pos, 1.0f);
 	vso.uv = input.uv;
     
-    vso.uv.x += 6 * tilex;
+    float offsetx = 1.0f / columnCount;
+    float offsety = 1.0f / rowCount;
+    
+    vso += float2(tileIndex.x * offsetx, tileIndex.y * offsety);
+    
+    vso.uv.x += tileIndex;
 
 	return vso;
 }

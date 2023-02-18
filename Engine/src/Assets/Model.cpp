@@ -62,7 +62,7 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 	ConstantBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	ConstantBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	ConstantBufferDesc.MiscFlags = 0;
-	ConstantBufferDesc.ByteWidth = sizeof(constantBuffer);
+	ConstantBufferDesc.ByteWidth = 16u;
 	ConstantBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA ConstantResourceData = {};
@@ -84,15 +84,14 @@ Model::~Model()
 
 void Model::InitializeModel(string imageName)
 {
+	LoadStates();
+	LoadSpriteImage(imageName);
 	const uint32 stride = sizeof(VertexData);
 	const uint32 offset = 0u;
 
 	dxContext->IASetVertexBuffers(0u, 1u, m_VertexBuffer.GetAddressOf(), &stride, &offset);
 	dxContext->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	dxContext->VSSetConstantBuffers(0, 1u, m_ConstantBuffer.GetAddressOf());
-	
-	LoadSpriteImage(imageName);
-
 	dxContext->PSSetSamplers(0u, 1u, m_SamplerState.GetAddressOf());
 	dxContext->PSSetShaderResources(0u, 1u, m_ShaderResourceView.GetAddressOf());
 	dxContext->OMSetBlendState(m_BlendState.Get(), nullptr, D3D11_APPEND_ALIGNED_ELEMENT);
@@ -145,6 +144,13 @@ bool Model::LoadSpriteImage(string imageName)
 	}
 
 	Logger::PrintLog(Logger::PrintType::Success, "Shader Resource View has been created successfully.");
+
+	return true;
+}
+
+bool Model::LoadStates()
+{
+	HRESULT hr;
 
 	D3D11_SAMPLER_DESC SamplerDesc{};
 	SamplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
@@ -204,12 +210,20 @@ bool Model::LoadSpriteImage(string imageName)
 
 void Model::UpdateModel(float DeltaTime)
 {
-	//constantBuffer.TilePoint = { 0.1f,1 };
+	static float counter;
+	counter += DeltaTime;
 
-	//D3D11_MAPPED_SUBRESOURCE cbSubresource{};
-	//dxContext->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &cbSubresource);
-	//memcpy(cbSubresource.pData, &constantBuffer, sizeof(constantBuffer));
-	//dxContext->Unmap(m_ConstantBuffer.Get(), 0);
+	if (counter >= 0.1f) {
+		constantBuffer.tilex > 0.9f ? constantBuffer.tilex = 0.1f : constantBuffer.tilex += 0.1f;
+
+		D3D11_MAPPED_SUBRESOURCE cbSubresource{};
+		dxContext->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &cbSubresource);
+		memcpy(cbSubresource.pData, &constantBuffer, 16u);
+		dxContext->Unmap(m_ConstantBuffer.Get(), 0);
+
+		counter = 0;
+	}
+
 }
 
 uint16 Model::GetIndicesCount()

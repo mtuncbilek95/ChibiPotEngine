@@ -21,6 +21,7 @@ public:
 protected:
 	void InitializeModel(string imageName = "Idle (96x96).png");
 	bool LoadSpriteImage(string imageName);
+	bool LoadStates();
 
 	ComPtr<ID3D11Buffer> m_VertexBuffer;
 	ComPtr<ID3D11Buffer> m_IndexBuffer;
