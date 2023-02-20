@@ -15,9 +15,6 @@ public:
 	void UpdateModel(float DeltaTime);
 	uint16 GetIndicesCount();
 
-	ComPtr<ID3D11VertexShader> m_VertexShader;
-	ComPtr<ID3D11PixelShader> m_PixelShader;
-
 protected:
 	void InitializeModel(string imageName = "Idle (96x96).png");
 	bool LoadSpriteImage(string imageName);

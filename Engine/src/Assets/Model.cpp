@@ -220,7 +220,7 @@ void Model::UpdateModel(float DeltaTime)
 		dxContext->Map(m_ConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &cbSubresource);
 		memcpy(cbSubresource.pData, &constantBuffer, 16u);
 		dxContext->Unmap(m_ConstantBuffer.Get(), 0);
-
+ 
 		counter = 0;
 	}
 

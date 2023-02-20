@@ -2,21 +2,26 @@
 
 #include <Core/CoreMinimal.h>
 
-class SpriteComponent {
+#include <Assets/SpriteAnimation.h>
+
+class SpriteComponent
+{
 
 public:
-	SpriteComponent() = delete;
-	SpriteComponent(uint32 width, uint32 height);
+	SpriteComponent() = default;
 
 public:
 	virtual ~SpriteComponent() = default;
 
-	void InitializeSprite(string atlasPath = "/Game-Resource/King/Idle (96x96).png");
-	void PlayAnimation();
+	void AddSpriteAnimation(string atlasName, SpriteAnimation spriteFile);
+	/**
+	 * @brief Plays the added sprite state.
+	 *
+	 * @param FPS Determines how many frames the animation plays in a second.
+	 * @param stateName Chooses the animation that will be played.
+	 */
+	void PlayAnimation(float FPS, string stateName);
 
-	uint32 GetWidth();
-	uint32 GetHeight();
-	
-protected:
-	int32 spriteWidth, spriteHeight, totalWidth, totalHeight, tileSize;
+private:
+	std::unordered_map<string, SpriteAnimation> AnimationHashMap;
 };

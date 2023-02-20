@@ -60,10 +60,9 @@ void Engine::Window::Run()
 			DispatchMessage(&msg);
 		}
 		else {
+			m_windowTimer.Tick();
 			RendererDX->UpdateFrame(m_windowTimer.DeltaTime());
 			CalculateFrameRate(m_windowTimer.DeltaTime());
-
-			m_windowTimer.Tick();
 		}
 	}
 }
