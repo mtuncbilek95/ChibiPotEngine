@@ -6,21 +6,28 @@
 
 class SpriteComponent
 {
-
 public:
 	SpriteComponent() = default;
 
 public:
 	virtual ~SpriteComponent() = default;
 
-	void AddSpriteAnimation(string atlasName, SpriteAnimation spriteFile);
+	/**
+	 * @brief Adds the animation to the map via given name in order to call it via name
+	 * in PlayAnimation function.
+	 *
+	 * @param atlasName The name of the animation in hashmap
+	 * @param animationFile The file in hashmap
+	 */
+	void AddSpriteAnimation(string atlasName, SpriteAnimation animationFile);
 	/**
 	 * @brief Plays the added sprite state.
 	 *
-	 * @param FPS Determines how many frames the animation plays in a second.
 	 * @param stateName Chooses the animation that will be played.
+	 * @param FPS Determines how many frames the animation plays in a second.
+	 * @param DeltaTime deltaTime that comes from Update.
 	 */
-	void PlayAnimation(float FPS, string stateName);
+	void PlayAnimation(string stateName, float FPS, float DeltaTime);
 
 private:
 	std::unordered_map<string, SpriteAnimation> AnimationHashMap;

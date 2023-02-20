@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Core/CoreMinimal.h>
 
 struct VertexData {

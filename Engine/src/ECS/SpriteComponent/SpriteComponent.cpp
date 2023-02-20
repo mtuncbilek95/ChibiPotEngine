@@ -11,6 +11,11 @@
 // 	const byte* ImageData = stbi_load(filePath.c_str(), &totalWidth, &totalHeight, &imageChannels, imageDesiredChannels);
 // }
 
-void SpriteComponent::PlayAnimation(float FPS, string stateName)
+void SpriteComponent::AddSpriteAnimation(string atlasName, SpriteAnimation animationFile)
+{
+    AnimationHashMap.insert({atlasName, animationFile});
+}
+
+void SpriteComponent::PlayAnimation(string stateName, float FPS, float DeltaTime)
 {
 }

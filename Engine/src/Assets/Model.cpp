@@ -75,14 +75,11 @@ Model::Model(ComPtr<ID3D11DeviceContext>& Context, ComPtr<ID3D11Device>& Device)
 
 Model::~Model()
 {
-	m_VertexShader.Reset();
-	m_PixelShader.Reset();
-
 	m_VertexBuffer.Reset();
 	m_IndexBuffer.Reset();
 }
 
-void Model::InitializeModel(string imageName)
+void Model:: InitializeModel(string imageName)
 {
 	LoadStates();
 	LoadSpriteImage(imageName);
