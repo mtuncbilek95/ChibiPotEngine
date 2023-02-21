@@ -2,8 +2,8 @@
 #include <Logger/Logger.h>
 #include <Assets/ModelData.h>
 
-Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr), 
-m_Context(nullptr), m_RenderTargetView(nullptr)
+Engine::Renderer::Renderer(const int width, const int height) : m_Device(nullptr), m_SwapChain(nullptr),
+																m_Context(nullptr), m_RenderTargetView(nullptr)
 {
 	Viewport.Width = (float)width;
 	Viewport.Height = (float)height;
@@ -41,18 +41,19 @@ bool Engine::Renderer::Initialize(const HWND handle)
 	if (!CreateInputAssembler())
 		return false;
 
-	Model* king = new Model(m_Context, m_Device);
+	Model *king = new Model(m_Context, m_Device);
 
 	Models.push_back(king);
 
 	return true;
 }
 
-bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
+bool Engine::Renderer::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypes featureValue)
 {
 	D3D_DRIVER_TYPE driverType{};
+	uint8 featureType{};
 
-	switch (typeValue)
+	switch (driverValue)
 	{
 	case DriverTypes::Hardware:
 		driverType = D3D_DRIVER_TYPE_HARDWARE;
@@ -71,15 +72,26 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes typeValue)
 		break;
 	}
 
-	HRESULT hr = D3D11CreateDevice(nullptr, driverType, nullptr, D3D11_CREATE_DEVICE_DEBUG, nullptr, 0, D3D11_SDK_VERSION,
-		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
+	switch (featureValue)
+	{
+	case FeatureTypes::Dx11:
+		featureType = D3D11_SDK_VERSION;
+		break;
+
+	default:
+		featureType = D3D11_SDK_VERSION;
+		break;
+	}
+
+	HRESULT hr = D3D11CreateDevice(nullptr, driverType, nullptr, D3D11_CREATE_DEVICE_DEBUG, nullptr, 0, featureType,
+								   m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create the D3D11 Device.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create the D3D11 Device.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "D3D11 Device has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "D3D11 Device has been successfully created.");
 
 	return true;
 }
@@ -130,7 +142,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Device.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the DXGI Device.");
 		return false;
 	}
 
@@ -141,7 +153,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Adapter.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the DXGI Adapter.");
 		return false;
 	}
 
@@ -152,7 +164,7 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the DXGI Factory.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
 
@@ -161,11 +173,11 @@ bool Engine::Renderer::CreateSwapChain(const HWND handle)
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Swapchain.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Swapchain.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Swapchain has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "Swapchain has been successfully created.");
 
 #pragma endregion
 
@@ -181,92 +193,91 @@ bool Engine::Renderer::CreateRenderTargetView()
 	hr = m_SwapChain->GetBuffer(0, IID_PPV_ARGS(backBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to get the Backbuffer.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the Backbuffer.");
 		return false;
 	}
 
 	hr = m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_RenderTargetView);
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Render Target View.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Render Target View.");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Render Target View has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "Render Target View has been successfully created.");
 	return true;
 }
 
-bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::Renderer::CreatePixelShader(ComPtr<ID3DBlob> &Blob)
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
 	const string infoPixelShader = Logger::GetShaderData("PixelShader");
 
 	D3DCompile(infoPixelShader.c_str(), infoPixelShader.length(), nullptr, nullptr, nullptr, "main", "ps_5_0",
-		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+			   D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
 
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
-		printf("%s", (char*)ErrorBlob->GetBufferPointer());
-
+		printf("%s", (char *)ErrorBlob->GetBufferPointer());
 
 	HRESULT hr = m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader);
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create pixel shader.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create pixel shader.");
 		return false;
 	}
 
 	m_Context->PSSetShader(m_PixelShader.Get(), nullptr, 0u);
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Pixel Shader has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "Pixel Shader has been successfully created.");
 	return true;
 }
 
-bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::Renderer::CreateVertexShader(ComPtr<ID3DBlob> &Blob)
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
 	const string infoVertexShader = Logger::GetShaderData("VertexShader");
 	D3DCompile(infoVertexShader.c_str(), infoVertexShader.length(), nullptr, nullptr, nullptr, "main", "vs_5_0",
-		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+			   D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
 
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
-		printf("%s", (char*)ErrorBlob->GetBufferPointer());
+		printf("%s", (char *)ErrorBlob->GetBufferPointer());
 
 	HRESULT hr = m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_VertexShader);
-	
+
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create vertex shader.");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create vertex shader.");
 		return false;
 	}
 
 	m_Context->VSSetShader(m_VertexShader.Get(), nullptr, 0u);
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Vertex Shader has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "Vertex Shader has been successfully created.");
 
 	return true;
 }
 
-bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
+bool Engine::Renderer::CreateInputLayout(ComPtr<ID3DBlob> &Blob)
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0,D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
-	};
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
 
 	HRESULT hr = m_Device->CreateInputLayout(inputElementDesc, (uint32)std::size(inputElementDesc),
-		Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_InputLayout);
+											 Blob->GetBufferPointer(), Blob->GetBufferSize(), &m_InputLayout);
 
 	if (FAILED(hr))
 	{
-		Logger::PrintLog(Logger::PrintType::Error,  "Failed to create Input Layout");
+		Logger::PrintLog(Logger::PrintType::Error, "Failed to create Input Layout");
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success,  "Input Layout has been successfully created.");
+	Logger::PrintLog(Logger::PrintType::Success, "Input Layout has been successfully created.");
 	return true;
 }
 
@@ -284,17 +295,18 @@ void Engine::Renderer::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
 
-	for (auto& model : Models) {
+	for (auto &model : Models)
+	{
 		model->UpdateModel(DeltaTime);
 		m_Context->DrawIndexed(model->GetIndicesCount(), 0, 0);
 	}
-	
+
 	m_SwapChain->Present(1, 0);
 }
 
 void Engine::Renderer::ClearFrame()
 {
 	//{ 0.25f, 0.22f, 0.32f, 1.0f }
-	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
+	const float clearColor[] = {0.084f, 0.106f, 0.122f, 1.0f};
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
 }

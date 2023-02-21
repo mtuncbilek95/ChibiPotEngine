@@ -13,3 +13,10 @@ enum class FeatureTypes : uint8 {
     Dx11,
     Dx12
 };
+
+enum class GraphicsType : uint8 {
+    DirectX11,
+    DirectX12,
+    OpenGL,
+    Vulkan
+};
