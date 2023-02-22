@@ -3,19 +3,23 @@
 #include <Core/CoreMinimal.h>
 
 #include <Renderer/Renderer.h>
+#include <Graphics/Device/GraphicsDevice.h>
+
 #include <GameTimer/GameTimer.h>
 
 namespace Engine {
 
 	class Window {
 	public:
-		Window(UINT width, UINT height);
+		Window(int width, int height);
 		Window(const Window&) = delete;
 		Window& operator= (const Window&) = delete;
 		~Window() = default;
 
 		void Initialize();
-		void Run();
+
+		void Start();
+		void Update();
 		void Exit();
 
 		bool bIsRunning;
@@ -24,12 +28,12 @@ namespace Engine {
 		void CalculateFrameRate(float DeltaTime);
 		void ProcessMessage();
 
-		Renderer* RendererDX;
+		GraphicsDevice* GraphicsDeviceDX;
 	private:
 		HINSTANCE m_hInstance;
 		HWND m_windowHandle;
 
-		UINT m_width, m_height;
+		int m_width, m_height;
 
 		const string m_className;
 		const string m_windowName;

@@ -3,13 +3,13 @@
 #include <Logger/Logger.h>
 #include <Resources/Resource.h>
 
-Engine::Window::Window(UINT width, UINT height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
-bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
+Engine::Window::Window(int width, int height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
+												  bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
 
-	RendererDX = new Renderer(width, height);
+	GraphicsDeviceDX = new GraphicsDevice(width, height);
 }
 
 void Engine::Window::Initialize()
@@ -37,31 +37,38 @@ void Engine::Window::Initialize()
 	AdjustWindowRect(&windowSize, windowStyle, false);
 
 	m_windowHandle = CreateWindowEx(0, m_className.c_str(), m_windowName.c_str(), windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
-		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
+									windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 
-	if (m_windowHandle != nullptr) {
-		Logger::PrintLog(Logger::PrintType::Success,  "Window has been successfully created.");
+	if (m_windowHandle != nullptr)
+	{
+		Logger::PrintLog(Logger::PrintType::Success, "Window has been successfully created.");
 		ShowWindow(m_windowHandle, SW_SHOW);
 	}
-
-	bIsRunning = RendererDX->Initialize(m_windowHandle);
 }
 
-void Engine::Window::Run()
+void Engine::Window::Start()
+{
+	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle);
+}
+
+void Engine::Window::Update()
 {
 	m_windowTimer.Reset();
 
 	MSG msg{};
 
-	while (msg.message != WM_QUIT) {
+	while (msg.message != WM_QUIT)
+	{
 
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-		else {
+		else
+		{
 			m_windowTimer.Tick();
-			RendererDX->UpdateFrame(m_windowTimer.DeltaTime());
+			GraphicsDeviceDX->UpdateFrame(m_windowTimer.DeltaTime());
 			CalculateFrameRate(m_windowTimer.DeltaTime());
 		}
 	}
@@ -73,7 +80,7 @@ void Engine::Window::Exit()
 	DestroyWindow(m_windowHandle);
 	m_hInstance = 0;
 	m_windowHandle = 0;
-	delete RendererDX;
+	delete GraphicsDeviceDX;
 }
 
 LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -82,15 +89,15 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	{
 	case WM_CREATE:
 	{
-		Window* WindowPtr = (Window*)((LPCREATESTRUCT)lParam)->lpCreateParams;
+		Window *WindowPtr = (Window *)((LPCREATESTRUCT)lParam)->lpCreateParams;
 		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (LONG_PTR)WindowPtr);
 		break;
 	}
 	case WM_CLOSE:
-		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		((Window *)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
 		break;
 	case WM_QUIT:
-		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		((Window *)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -107,8 +114,9 @@ void Engine::Window::CalculateFrameRate(float DeltaTime)
 
 	int fps = (int)(1.f / DeltaTime);
 
-	if (counter >= 1.0f) {
-		
+	if (counter >= 1.0f)
+	{
+
 		string fpsStr = std::to_string(static_cast<int>(fps));
 
 		string windowText = m_windowName + " FPS: " + fpsStr;

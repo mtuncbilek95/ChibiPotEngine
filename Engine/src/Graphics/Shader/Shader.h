@@ -29,8 +29,4 @@ public:
 	 * @return if returns false, related object wont be spawned.
 	 */
 	bool CompileShader(string shaderName, ShaderType type);
-
-private:
-	ComPtr<ID3D11DeviceContext> &m_Context;
-	ComPtr<ID3D11Device> &m_Device;
 };
