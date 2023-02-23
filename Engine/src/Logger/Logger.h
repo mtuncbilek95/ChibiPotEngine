@@ -12,10 +12,6 @@
 #define CB_Error		"\033[0;31mError: "
 #define CB_Display		"\033[0;37mDisplay: "
 
-#define CONSOLE_LOG(color,message,...) printf(color message WHITE_END,__VA_ARGS__);
-
-
-
 namespace Logger {
 
 	enum class PrintType : byte {

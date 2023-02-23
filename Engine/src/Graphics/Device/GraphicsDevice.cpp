@@ -24,7 +24,7 @@ bool Engine::GraphicsDevice::Initialize(const HWND handle)
 	return true;
 }
 
-bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypes featureValue)
+bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypesDX featureValue)
 {
 	D3D_DRIVER_TYPE driverType{};
 	uint8 featureType{};
@@ -50,7 +50,7 @@ bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, 
 
 	switch (featureValue)
 	{
-	case FeatureTypes::Dx11:
+	case FeatureTypesDX::Dx11:
 		featureType = D3D11_SDK_VERSION;
 		break;
 
@@ -108,7 +108,7 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 
 #pragma endregion
 
-#pragma region "Swapchain Order Creation"
+#pragma region "Swapchain Creation Order"
 
 	// Device Creation on DXGI
 	ComPtr<IDXGIDevice> dxgiDevice;

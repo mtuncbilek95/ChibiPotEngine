@@ -9,7 +9,7 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/GameTimer/GameTimer.cpp"
 "src/Assets/Model.cpp" 
 "src/ECS/SpriteComponent/SpriteComponent.cpp"
-"src/Graphics/Shader/Shader.cpp"
+"src/Graphics/Shader/ShaderDevice.cpp"
 "src/Graphics/Device/GraphicsDevice.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Engine/src")

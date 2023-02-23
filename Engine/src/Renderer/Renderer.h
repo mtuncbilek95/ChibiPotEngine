@@ -19,7 +19,7 @@ namespace Engine {
 		void UpdateFrame(float DeltaTime);
 
 	protected:
-		bool CreateDeviceContext(const DriverTypes typeValue = DriverTypes::Hardware, const FeatureTypes featureValue = FeatureTypes::Dx11);
+		bool CreateDeviceContext(const DriverTypes typeValue = DriverTypes::Hardware, const FeatureTypesDX featureValue = FeatureTypesDX::Dx11);
 		bool CreateSwapChain(const HWND handle);
 		bool CreateRenderTargetView();
 		bool CreatePixelShader(ComPtr<ID3DBlob>& Blob);

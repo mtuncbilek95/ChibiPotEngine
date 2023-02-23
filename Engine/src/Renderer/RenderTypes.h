@@ -9,7 +9,7 @@ enum class DriverTypes : uint8 {
     Software
 };  
 
-enum class FeatureTypes : uint8 {
+enum class FeatureTypesDX : uint8 {
     Dx11,
     Dx12
 };

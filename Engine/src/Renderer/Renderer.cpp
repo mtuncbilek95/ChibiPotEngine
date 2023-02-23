@@ -48,7 +48,7 @@ bool Engine::Renderer::Initialize(const HWND handle)
 	return true;
 }
 
-bool Engine::Renderer::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypes featureValue)
+bool Engine::Renderer::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypesDX featureValue)
 {
 	D3D_DRIVER_TYPE driverType{};
 	uint8 featureType{};
@@ -74,7 +74,7 @@ bool Engine::Renderer::CreateDeviceContext(const DriverTypes driverValue, const 
 
 	switch (featureValue)
 	{
-	case FeatureTypes::Dx11:
+	case FeatureTypesDX::Dx11:
 		featureType = D3D11_SDK_VERSION;
 		break;
 
