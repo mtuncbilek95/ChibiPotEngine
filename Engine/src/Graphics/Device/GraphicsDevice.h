@@ -36,15 +36,14 @@ namespace Engine
     public:
         /**
          * @brief Construct a new Graphics Program object
-         * @param ViewportSize Parameter to get the Windowsize from Windows API which will be used in D3D11_VIEWPORT.
          */
-        GraphicsDevice(int width, int height);
+        GraphicsDevice();
         /**
          * @brief Runs all the sub-initializing functions such as CreateDeviceContext, CreateSwapchain.
          * @param handle the window Handle comes from WindowClass.
          * @return if returns false Window will be aborted without hesitation.
          */
-        bool Initialize(const HWND handle);
+        bool Initialize(const HWND handle, int m_width, int m_height);
         /**
          * @brief Runs all the upper system elements frame by frame.
          * @param DeltaTime the time between two frames in seconds.
@@ -75,11 +74,7 @@ namespace Engine
          * @return if returns false Window will be aborted without hesitation.
          */
         bool CreateRenderTargetView();
-        /**
-         * @brief
-         * @return
-         */
-        void CreateInputAssembler();
+        bool CreateViewport(int width, int height);
 
     private:
         ComPtr<ID3D11Device> m_Device;
@@ -94,6 +89,9 @@ namespace Engine
         ComPtr<ID3D11VertexShader> m_VertexShader;
         // TODO: Use single Pixel Shader structure for now, but it will be transform into multiple shader structure.
         ComPtr<ID3D11PixelShader> m_PixelShader;
-
+        // TODO: Use single Input Layout structure for now.
+        ComPtr<ID3D11InputLayout> m_InputLayout;
+        // TODO: Use this in here for now.
+        ComPtr<ID3DBlob> m_Blob;
     };
 }

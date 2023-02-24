@@ -2,28 +2,25 @@
 
 #include <Logger/Logger.h>
 
-Engine::GraphicsDevice::GraphicsDevice(int width, int height)
+Engine::GraphicsDevice::GraphicsDevice()
 {
-	Viewport.Width = (float)width;
-	Viewport.Height = (float)height;
-	Viewport.MinDepth = 0;
-	Viewport.MaxDepth = 1;
-	Viewport.TopLeftX = 0;
-	Viewport.TopLeftY = 0;
 }
 
-bool Engine::GraphicsDevice::Initialize(const HWND handle)
+bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_height)
 {
 	if (!CreateDeviceContext())
 		return false;
 	if (!CreateSwapChain(handle))
 		return false;
+	if (!CreateViewport(m_width, m_height))
+		return false;
 	if (!CreateRenderTargetView())
 		return false;
 
+	
+
 	return true;
 }
-
 bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, const FeatureTypesDX featureValue)
 {
 	D3D_DRIVER_TYPE driverType{};
@@ -71,7 +68,6 @@ bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, 
 
 	return true;
 }
-
 bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 {
 #pragma region "Swapchain Description"
@@ -158,7 +154,6 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 
 	return true;
 }
-
 bool Engine::GraphicsDevice::CreateRenderTargetView()
 {
 	ComPtr<ID3D11Texture2D> backBuffer;
@@ -179,24 +174,35 @@ bool Engine::GraphicsDevice::CreateRenderTargetView()
 		return false;
 	}
 
+	m_Context->OMSetRenderTargets(1u, m_RenderTargetView.GetAddressOf(), nullptr);
+
 	Logger::PrintLog(Logger::PrintType::Success, "Render Target View has been successfully created.");
 
 	return true;
 }
-
-void Engine::GraphicsDevice::CreateInputAssembler()
+bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 {
-	m_Context->RSSetViewports(1u, &Viewport);
-	m_Context->OMSetRenderTargets(1u, m_RenderTargetView.GetAddressOf(), nullptr);
-}
+	if (width < 640 && height < 480) 
+	{
+		Logger::PrintLog(Logger::PrintType::Error, "Use a windowsize bigger than 640x480");
+		return false;
+	}
 
+	Viewport.Width = (float)width;
+	Viewport.Height = (float)height;
+	Viewport.MinDepth = 0;
+	Viewport.MaxDepth = 1;
+	Viewport.TopLeftX = 0;
+	Viewport.TopLeftY = 0;
+
+	m_Context->RSSetViewports(1u, &Viewport);
+}
 bool Engine::GraphicsDevice::UpdateFrame(float DeltaTime)
 {
 	ClearFrame();
 	m_Swapchain->Present(1, 0);
 	return true;
 }
-
 void Engine::GraphicsDevice::ClearFrame()
 {
 	// { 0.25f, 0.22f, 0.32f, 1.0f }

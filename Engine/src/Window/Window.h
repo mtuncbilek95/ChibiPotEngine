@@ -16,7 +16,7 @@ namespace Engine {
 		Window& operator= (const Window&) = delete;
 		~Window() = default;
 
-		void Initialize();
+		void InitializeWindow();
 
 		void Start();
 		void Update();
@@ -26,7 +26,6 @@ namespace Engine {
 	protected:
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		void CalculateFrameRate(float DeltaTime);
-		void ProcessMessage();
 
 		GraphicsDevice* GraphicsDeviceDX;
 	private:

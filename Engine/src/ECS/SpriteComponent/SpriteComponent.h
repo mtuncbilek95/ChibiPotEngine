@@ -2,7 +2,7 @@
 
 #include <Core/CoreMinimal.h>
 
-#include <Assets/SpriteAnimation.h>
+class SpriteAnimation;
 
 class SpriteComponent
 {

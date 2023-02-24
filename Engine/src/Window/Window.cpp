@@ -4,15 +4,15 @@
 #include <Resources/Resource.h>
 
 Engine::Window::Window(int width, int height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
-												  bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
+bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
 
-	GraphicsDeviceDX = new GraphicsDevice(width, height);
+	GraphicsDeviceDX = new GraphicsDevice();
 }
 
-void Engine::Window::Initialize()
+void Engine::Window::InitializeWindow()
 {
 	WNDCLASSEX windowClass{};
 	windowClass.cbSize = sizeof(windowClass);
@@ -37,7 +37,7 @@ void Engine::Window::Initialize()
 	AdjustWindowRect(&windowSize, windowStyle, false);
 
 	m_windowHandle = CreateWindowEx(0, m_className.c_str(), m_windowName.c_str(), windowStyle, windowSize.left, windowSize.top, windowSize.right - windowSize.left,
-									windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
+		windowSize.bottom - windowSize.top, nullptr, nullptr, m_hInstance, this);
 
 	if (m_windowHandle != nullptr)
 	{
@@ -48,7 +48,7 @@ void Engine::Window::Initialize()
 
 void Engine::Window::Start()
 {
-	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle);
+	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle, m_width, m_height);
 }
 
 void Engine::Window::Update()
@@ -89,15 +89,15 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	{
 	case WM_CREATE:
 	{
-		Window *WindowPtr = (Window *)((LPCREATESTRUCT)lParam)->lpCreateParams;
+		Window* WindowPtr = (Window*)((LPCREATESTRUCT)lParam)->lpCreateParams;
 		SetWindowLongPtr(windowHandle, GWLP_USERDATA, (LONG_PTR)WindowPtr);
 		break;
 	}
 	case WM_CLOSE:
-		((Window *)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
 		break;
 	case WM_QUIT:
-		((Window *)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
+		((Window*)(GetWindowLongPtr(windowHandle, GWLP_USERDATA)))->bIsRunning = false;
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
@@ -109,7 +109,7 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 
 void Engine::Window::CalculateFrameRate(float DeltaTime)
 {
-	static float counter{0};
+	static float counter{ 0 };
 	counter += DeltaTime;
 
 	int fps = (int)(1.f / DeltaTime);
@@ -122,16 +122,5 @@ void Engine::Window::CalculateFrameRate(float DeltaTime)
 		string windowText = m_windowName + " FPS: " + fpsStr;
 		Logger::PrintLog(Logger::PrintType::Display, windowText);
 		counter = 0.0f;
-	}
-}
-
-void Engine::Window::ProcessMessage()
-{
-	MSG msg{};
-
-	while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
 	}
 }

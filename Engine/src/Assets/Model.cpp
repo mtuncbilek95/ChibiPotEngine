@@ -98,7 +98,7 @@ bool Model::LoadSpriteImage(string imageName)
 {
 	int imageWidth{}, imageHeight{}, imageChannels{}, imageDesiredChannels{ 4 };
 	string filePath = Logger::GetInitialDir() + "/Game-Resource/King/" + imageName;
-	const byte* ImageData = stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
+	const byte* ImageData = Engine::stbi_load(filePath.c_str(), &imageWidth, &imageHeight, &imageChannels, imageDesiredChannels);
 
 	int imagePitch = imageWidth * 4 * sizeof(byte);
 
