@@ -27,7 +27,7 @@ namespace Engine {
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		void CalculateFrameRate(float DeltaTime);
 
-		GraphicsDevice* GraphicsDeviceDX;
+		Renderer* GraphicsDeviceDX;
 	private:
 		HINSTANCE m_hInstance;
 		HWND m_windowHandle;

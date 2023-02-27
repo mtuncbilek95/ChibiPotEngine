@@ -9,7 +9,7 @@ bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 	this->m_width = width;
 	this->m_height = height;
 
-	GraphicsDeviceDX = new GraphicsDevice();
+	GraphicsDeviceDX = new Renderer(width, height);
 }
 
 void Engine::Window::InitializeWindow()
@@ -48,7 +48,7 @@ void Engine::Window::InitializeWindow()
 
 void Engine::Window::Start()
 {
-	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle, m_width, m_height);
+	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle);
 }
 
 void Engine::Window::Update()
