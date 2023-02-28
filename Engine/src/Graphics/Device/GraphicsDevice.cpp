@@ -2,7 +2,7 @@
 
 #include <Logger/Logger.h>
 
-Engine::GraphicsDevice::GraphicsDevice()
+Engine::GraphicsDevice::GraphicsDevice() : Viewport()
 {
 }
 
@@ -12,11 +12,10 @@ bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_he
 		return false;
 	if (!CreateSwapChain(handle))
 		return false;
-	if (!CreateViewport(m_width, m_height))
-		return false;
 	if (!CreateRenderTargetView())
 		return false;
-
+	if (!CreateViewport(m_width, m_height))
+		return false;
 	
 
 	return true;
@@ -182,22 +181,26 @@ bool Engine::GraphicsDevice::CreateRenderTargetView()
 }
 bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 {
-	if (width < 640 && height < 480) 
+	if (width < 640 || height < 480) 
 	{
 		Logger::PrintLog(Logger::PrintType::Error, "Use a windowsize bigger than 640x480");
 		return false;
 	}
 
-	Viewport.Width = (float)width;
-	Viewport.Height = (float)height;
-	Viewport.MinDepth = 0;
-	Viewport.MaxDepth = 1;
-	Viewport.TopLeftX = 0;
-	Viewport.TopLeftY = 0;
+	else {
+		Viewport.Width = (float)width;
+		Viewport.Height = (float)height;
+		Viewport.MinDepth = 0;
+		Viewport.MaxDepth = 1;
+		Viewport.TopLeftX = 0;
+		Viewport.TopLeftY = 0;
 
-	m_Context->RSSetViewports(1u, &Viewport);
+		m_Context->RSSetViewports(1u, &Viewport);
+
+		return true;
+	}
 }
-bool Engine::GraphicsDevice::UpdateFrame(float DeltaTime)
+bool Engine::GraphicsDevice::Update(float DeltaTime)
 {
 	ClearFrame();
 	m_Swapchain->Present(1, 0);

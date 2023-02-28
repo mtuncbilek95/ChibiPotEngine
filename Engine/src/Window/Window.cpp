@@ -8,8 +8,6 @@ bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
-
-	GraphicsDeviceDX = new Renderer(width, height);
 }
 
 void Engine::Window::InitializeWindow()
@@ -46,9 +44,10 @@ void Engine::Window::InitializeWindow()
 	}
 }
 
-void Engine::Window::Start()
+void Engine::Window::BeginPlay(GraphicsDevice* GraphicsDevice)
 {
-	bIsRunning = GraphicsDeviceDX->Initialize(m_windowHandle);
+	this->m_GraphicsDevice = GraphicsDevice;
+	bIsRunning = m_GraphicsDevice->Initialize(m_windowHandle, m_width, m_height);
 }
 
 void Engine::Window::Update()
@@ -68,19 +67,19 @@ void Engine::Window::Update()
 		else
 		{
 			m_windowTimer.Tick();
-			GraphicsDeviceDX->UpdateFrame(m_windowTimer.DeltaTime());
+			this->m_GraphicsDevice->Update(m_windowTimer.DeltaTime());
 			CalculateFrameRate(m_windowTimer.DeltaTime());
 		}
 	}
 }
 
-void Engine::Window::Exit()
+void Engine::Window::EndPlay()
 {
 	UnregisterClass(m_className.c_str(), m_hInstance);
 	DestroyWindow(m_windowHandle);
 	m_hInstance = 0;
 	m_windowHandle = 0;
-	delete GraphicsDeviceDX;
+	delete this->m_GraphicsDevice;
 }
 
 LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)

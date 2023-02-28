@@ -10,6 +10,7 @@ enum class ShaderType : uint8
 	GeometryShader,
 	PixelShader
 };
+
 namespace Engine
 {
 	class ShaderDevice

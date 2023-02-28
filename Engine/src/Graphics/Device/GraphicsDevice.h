@@ -49,7 +49,7 @@ namespace Engine
          * @param DeltaTime the time between two frames in seconds.
          * @return if returns false Window will be aborted without hesitation.
          */
-        bool UpdateFrame(float DeltaTime);
+        bool Update(float DeltaTime);
         /**
          * @brief Renders the specified color for the window.
          */
