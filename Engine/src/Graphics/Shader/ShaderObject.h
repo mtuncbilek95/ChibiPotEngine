@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
-#include <Graphics/Device/GraphicsDevice.h>
+
 
 enum class ShaderType : uint8
 {
@@ -13,14 +13,16 @@ enum class ShaderType : uint8
 
 namespace Engine
 {
-	class ShaderDevice
+	class GraphicsDevice;
+
+	class ShaderObject
 	{
 	public:
 		/**
 		 * @brief Construct a new Shader Device object
 		 * @param _graphicsDevice
 		*/
-		ShaderDevice(GraphicsDevice* _graphicsDevice);
+		ShaderObject(GraphicsDevice* _graphicsDevice);
 		/**
 		 * @brief Compiles the shader with ID3DBlob which stores the data for vertex and material.
 		 * @param shaderName 	Name of the shader which will be initialized. Example: "ObjectFolder/ObjectVertexShader"

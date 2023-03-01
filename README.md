@@ -26,16 +26,52 @@ ChibiPot Engine will only run a single static scene with no input for its initia
 
 ## In Progress Theories
 
-> #### 1. Runnable-Tick System
->In my opinion, the best approach on using a seperated tick system is creating an Interface which interact with whole Engine Window/Renderer structure which is inspirated. For starter, we can create a class like below.
->```cpp
->class GameConductor {
->public:
->	virtual void Start() = 0;
->	virtual void Tick(float DeltaTime) = 0;
->	virtual void Stop() = 0;
->};
+> #### 1. Application Structure
+>```
+>___Game Application
+>		|
+>		|___Graphics Device
+>		|	|
+>		|	|___Device Object
+>		|	|
+>		|	|___Context Object
+>		|	|
+>		|	|___Swapchain Object
+>		|	|
+>		|	|___Render Target View Object
+>		|
+>		|___Window
+>		|
+>		|___Game Logic
+>		|	|
+>		|	|___World Scene
+>		|		|
+>		|		|___Objects
+>		|		|
+>		|		|___Enviroment
+>		|		|
+>		|		|___Characters
+>		|			|
+>		|			|___Sprite
+>		|				|
+>		|				|___Sprite Material
+>		|					|
+>		|					|___Shaders
+>		|					|
+>		|					|___Textures
+>		|
+>		|___Timer
 >```
 
->#### 2. Object Initialization
->Since there is no editor to place the objects in world, it is needed to be placed hardcoded via class called WorldObject. Constructor holds the objects via class definition called GameObject.
+> #### 2. Application Logic
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+

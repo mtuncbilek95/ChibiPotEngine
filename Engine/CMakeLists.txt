@@ -9,12 +9,12 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/GameTimer/GameTimer.cpp"
 "src/Assets/Model.cpp" 
 "src/ECS/SpriteComponent/SpriteComponent.cpp"
-"src/Graphics/Shader/ShaderDevice.cpp"
+"src/Graphics/Shader/ShaderObject.cpp"
 "src/Graphics/Device/GraphicsDevice.cpp"
-"src/Application/ApplicationDevice.cpp")
+"src/Application/GameApp.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Engine/src")
-target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Third-Party/DirectX/include")
+
 
 target_link_libraries(${PROJECT_NAME} "d3d11.lib")
 target_link_libraries(${PROJECT_NAME} "dxgi.lib")

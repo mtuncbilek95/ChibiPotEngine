@@ -1,20 +1,20 @@
-#include "ShaderDevice.h"
+#include "ShaderObject.h"
 
 #include <Logger/Logger.h>
+#include <Graphics/Device/GraphicsDevice.h>
 
-
-Engine::ShaderDevice::ShaderDevice(Engine::GraphicsDevice* _graphicsDevice)
+Engine::ShaderObject::ShaderObject(Engine::GraphicsDevice* _graphicsDevice)
 {
 	this->graphicsDevice = _graphicsDevice;
 }
 
-bool Engine::ShaderDevice::CompileShader(ComPtr<ID3DBlob>& Blob, string shaderName, ShaderType type)
+bool Engine::ShaderObject::CompileShader(ComPtr<ID3DBlob>& Blob, string shaderName, ShaderType type)
 {
 	Logger::PrintLog(Logger::PrintType::Warning, "CompileShader() has no implemented method yet!");
 	return false;
 }
 
-bool Engine::ShaderDevice::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
@@ -40,7 +40,7 @@ bool Engine::ShaderDevice::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
 	return true;
 }
 
-bool Engine::ShaderDevice::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
@@ -66,7 +66,7 @@ bool Engine::ShaderDevice::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
 	return true;
 }
 
-bool Engine::ShaderDevice::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{

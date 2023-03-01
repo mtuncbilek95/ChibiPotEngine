@@ -1,9 +1,11 @@
 #include "GraphicsDevice.h"
 
 #include <Logger/Logger.h>
+#include <Graphics/Shader/ShaderObject.h>
 
 Engine::GraphicsDevice::GraphicsDevice() : Viewport()
 {
+	Shader = new ShaderObject(this);
 }
 
 bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_height)
@@ -16,7 +18,11 @@ bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_he
 		return false;
 	if (!CreateViewport(m_width, m_height))
 		return false;
-	
+
+	ComPtr<ID3DBlob> Blob;
+	Shader->CompilePixelShader(Blob);
+	Shader->CompileVertexShader(Blob);
+	Shader->CreateInputLayout(Blob);
 
 	return true;
 }
@@ -56,7 +62,7 @@ bool Engine::GraphicsDevice::CreateDeviceContext(const DriverTypes driverValue, 
 	}
 
 	HRESULT hr = D3D11CreateDevice(nullptr, driverType, nullptr, D3D11_CREATE_DEVICE_DEBUG, nullptr, 0, featureType,
-								   m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
+		m_Device.GetAddressOf(), nullptr, m_Context.GetAddressOf());
 	if (FAILED(hr))
 	{
 		Logger::PrintLog(Logger::PrintType::Error, "Failed to create the D3D11 Device.");
@@ -116,6 +122,8 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
+	Logger::PrintLog(Logger::PrintType::Success, "DXGI Device is on.");
+
 	// Adapter Creation on DXGI
 	ComPtr<IDXGIAdapter> dxgiAdapter;
 
@@ -127,6 +135,8 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
+	Logger::PrintLog(Logger::PrintType::Success, "DXGI Adapter is on.");
+
 	// Method Implementation on DXGI
 	ComPtr<IDXGIFactory> dxgiFactory;
 
@@ -137,6 +147,8 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
+
+	Logger::PrintLog(Logger::PrintType::Success, "DXGI Factory is on.");
 
 	// Swapchain creation on DXGI
 	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, &m_Swapchain);
@@ -153,6 +165,7 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 
 	return true;
 }
+
 bool Engine::GraphicsDevice::CreateRenderTargetView()
 {
 	ComPtr<ID3D11Texture2D> backBuffer;
@@ -179,9 +192,10 @@ bool Engine::GraphicsDevice::CreateRenderTargetView()
 
 	return true;
 }
+
 bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 {
-	if (width < 640 || height < 480) 
+	if (width < 640 || height < 480)
 	{
 		Logger::PrintLog(Logger::PrintType::Error, "Use a windowsize bigger than 640x480");
 		return false;
@@ -200,15 +214,17 @@ bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 		return true;
 	}
 }
+
 bool Engine::GraphicsDevice::Update(float DeltaTime)
 {
 	ClearFrame();
 	m_Swapchain->Present(1, 0);
 	return true;
 }
+
 void Engine::GraphicsDevice::ClearFrame()
 {
 	// { 0.25f, 0.22f, 0.32f, 1.0f }
-	const float clearColor[] = {0.084f, 0.106f, 0.122f, 1.0f};
+	const float clearColor[] = { 0.084f, 0.106f, 0.122f, 1.0f };
 	m_Context->ClearRenderTargetView(m_RenderTargetView.Get(), clearColor);
 }

@@ -2,6 +2,8 @@
 
 #include <Core/CoreMinimal.h>
 
+
+
 namespace Engine
 {
     /// @brief DirectX driver types. The default parameter for related function uses Hardware.
@@ -32,27 +34,27 @@ namespace Engine
     /// @brief Initializer for Graphics API Interfaces.
     class GraphicsDevice
     {
-        friend class ShaderDevice;
+        friend class ShaderObject;
     public:
         /**
          * @brief Construct a new Graphics Program object
-         */
+        */
         GraphicsDevice();
         /**
          * @brief Runs all the sub-initializing functions such as CreateDeviceContext, CreateSwapchain.
          * @param handle the window Handle comes from WindowClass.
          * @return if returns false Window will be aborted without hesitation.
-         */
+        */
         bool Initialize(const HWND handle, int m_width, int m_height);
         /**
          * @brief Runs all the upper system elements frame by frame.
          * @param DeltaTime the time between two frames in seconds.
          * @return if returns false Window will be aborted without hesitation.
-         */
+        */
         bool Update(float DeltaTime);
         /**
          * @brief Renders the specified color for the window.
-         */
+        */
         void ClearFrame();
 
     protected:
@@ -61,18 +63,18 @@ namespace Engine
          * @param typeValue DirectX driver types. The default parameter for related function uses Hardware.
          * @param featureValue Definition for the current DirectX API which is being used by ID3D11Device.
          * @return if returns false Window will be aborted without hesitation.
-         */
+        */
         bool CreateDeviceContext(const DriverTypes driverValue = DriverTypes::Hardware, const FeatureTypesDX featureValue = FeatureTypesDX::Dx11);
         /**
          * @brief Create a Swap Chain for IDXGISwapChain
          * @param handle the window Handle comes from WindowClass.
          * @return if returns false Window will be aborted without hesitation.
-         */
+        */
         bool CreateSwapChain(const HWND handle);
         /**
          * @brief Create a Render Target View for ID3D11RenderTargetView.
          * @return if returns false Window will be aborted without hesitation.
-         */
+        */
         bool CreateRenderTargetView();
         bool CreateViewport(int width, int height);
 
@@ -84,6 +86,7 @@ namespace Engine
 
         D3D11_VIEWPORT Viewport;
 
+        ShaderObject* Shader;
     private:
         // TODO: Use single Vertex Shader structure for now, but it will be transform into multiple shader structure.
         ComPtr<ID3D11VertexShader> m_VertexShader;

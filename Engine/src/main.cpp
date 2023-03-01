@@ -1,13 +1,15 @@
-#include <Application/ApplicationDevice.h>
+#include <Window/Window.h>
 
 int main(int argumentC, char** argumentValue) {
 
-	Engine::ApplicationDevice* App = new Engine::ApplicationDevice();
+	Engine::Window* App = new Engine::Window(800,800);
 
-	App->BeginPlay();
-	App->Update();
-	App->LateUpdate();
-	App->EndPlay();
+	App->InitializeWindow();
+
+	App->Start();
+	while(App->GetIsRunning())
+		App->Update();
+	App->Stop();
 	
 	return 0;
 }

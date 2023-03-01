@@ -24,9 +24,9 @@ namespace Engine {
 
 		void InitializeWindow();
 
-		void BeginPlay(GraphicsDevice* GraphicsDevice);
+		void Start();
 		void Update();
-		void EndPlay();
+		void Stop();
 
 		XMINT2 GetWindowSize() { return {m_width,m_height}; }
 		HWND GetWindowHandler() { return m_windowHandle; }
