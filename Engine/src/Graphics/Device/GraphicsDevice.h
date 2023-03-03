@@ -2,8 +2,6 @@
 
 #include <Core/CoreMinimal.h>
 
-
-
 namespace Engine
 {
     /// @brief DirectX driver types. The default parameter for related function uses Hardware.

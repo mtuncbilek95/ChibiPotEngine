@@ -1,14 +1,18 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
+
 #include <Graphics/Device/GraphicsDevice.h>
 #include <Window/Window.h>
 
 class GameApp {
 public:
-	GameApp();
+	GameApp(int width, int height);
 
+	void Start();
+	void Run();
 private:
-	GraphicsDevice* m_GraphicsDevice;
-	Window* m_Window;
+	Engine::GraphicsDevice* m_GraphicsDevice;
+	Engine::Window* m_Window;
+	GameTimer* m_Timer;
 };

@@ -8,7 +8,6 @@ bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
-	m_GraphicsDevice = new GraphicsDevice();
 }
 
 void Engine::Window::InitializeWindow()
@@ -43,12 +42,6 @@ void Engine::Window::InitializeWindow()
 		Logger::PrintLog(Logger::PrintType::Success, "Window has been successfully created.");
 		ShowWindow(m_windowHandle, SW_SHOW);
 	}
-}
-
-void Engine::Window::Start()
-{
-	if(m_windowHandle)
-		bIsRunning = m_GraphicsDevice->Initialize(m_windowHandle, m_width, m_height);
 }
 
 void Engine::Window::Update()
