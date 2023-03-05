@@ -18,19 +18,15 @@ namespace Engine {
 		Window(int width, int height);
 		//	Copy Consturctor destruction.
 		Window(const Window&) = delete;
-		//	Copy Constructor desturction.
+		//	Move Semantics desturction.
 		Window& operator= (const Window&) = delete;
 		~Window() = default;
 
 		void InitializeWindow();
+		void ProcessMessage();
 
-		void Start();
-		void Update();
-		void Stop();
-
-		XMINT2 GetWindowSize() { return {m_width,m_height}; }
+		XMINT2 GetWindowSize() { return { m_width,m_height }; }
 		HWND GetWindowHandler() { return m_windowHandle; }
-		bool GetIsRunning() { return bIsRunning; }
 	protected:
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
 		void CalculateFrameRate(float DeltaTime);
@@ -44,9 +40,5 @@ namespace Engine {
 		const string m_className;
 		const string m_windowName;
 
-		GameTimer m_windowTimer;
-		bool bIsRunning;
-
-		GraphicsDevice* m_GraphicsDevice;
 	};
 }

@@ -44,6 +44,17 @@ void Engine::Window::InitializeWindow()
 	}
 }
 
+void Engine::Window::ProcessMessage()
+{
+	MSG msg{};
+
+	if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+	{
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+}
+
 void Engine::Window::Update()
 {
 	m_windowTimer.Reset();
@@ -53,11 +64,7 @@ void Engine::Window::Update()
 	while (msg.message != WM_QUIT)
 	{
 
-		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
-		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		
 		else
 		{
 			m_windowTimer.Tick();
@@ -109,7 +116,6 @@ void Engine::Window::CalculateFrameRate(float DeltaTime)
 
 	if (counter >= 1.0f)
 	{
-
 		string fpsStr = std::to_string(static_cast<int>(fps));
 
 		string windowText = m_windowName + " FPS: " + fpsStr;
