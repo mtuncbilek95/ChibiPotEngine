@@ -1,13 +1,25 @@
 #include "Window.h"
 
 #include <Logger/Logger.h>
+#include <Application/GameApp.h>
+
 #include <Resources/Resource.h>
+
 
 Engine::Window::Window(int width, int height) : m_hInstance(GetModuleHandle(nullptr)), m_windowHandle(nullptr),
 bIsRunning(false), m_className("WindowClass"), m_windowName("ChibiPot Engine")
 {
 	this->m_width = width;
 	this->m_height = height;
+	Logger::PrintLog(Logger::PrintType::Display, "********** Window Device **********");
+}
+
+Engine::Window::~Window()
+{
+	UnregisterClass(m_className.c_str(), m_hInstance);
+	DestroyWindow(m_windowHandle);
+	m_hInstance = 0;
+	m_windowHandle = 0;
 }
 
 void Engine::Window::InitializeWindow()
@@ -26,7 +38,7 @@ void Engine::Window::InitializeWindow()
 
 	DWORD windowStyle = WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU;
 
-	RECT windowSize;
+	RECT windowSize{};
 	windowSize.left = 250;
 	windowSize.top = 250;
 	windowSize.right = windowSize.left + m_width;
@@ -44,7 +56,7 @@ void Engine::Window::InitializeWindow()
 	}
 }
 
-void Engine::Window::ProcessMessage()
+bool Engine::Window::ProcessMessage()
 {
 	MSG msg{};
 
@@ -52,35 +64,16 @@ void Engine::Window::ProcessMessage()
 	{
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+
+		return true;
 	}
+	else
+		return false;
 }
 
-void Engine::Window::Update()
+HWND Engine::Window::GetWindowHandler()
 {
-	m_windowTimer.Reset();
-
-	MSG msg{};
-
-	while (msg.message != WM_QUIT)
-	{
-
-		
-		else
-		{
-			m_windowTimer.Tick();
-			m_GraphicsDevice->Update(m_windowTimer.DeltaTime());
-			CalculateFrameRate(m_windowTimer.DeltaTime());
-		}
-	}
-}
-
-void Engine::Window::Stop()
-{
-	UnregisterClass(m_className.c_str(), m_hInstance);
-	DestroyWindow(m_windowHandle);
-	m_hInstance = 0;
-	m_windowHandle = 0;
-	delete m_GraphicsDevice;
+	return m_windowHandle;
 }
 
 LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam)
@@ -105,21 +98,4 @@ LRESULT Engine::Window::WindowProc(HWND windowHandle, UINT message, WPARAM wPara
 	}
 
 	return DefWindowProc(windowHandle, message, wParam, lParam);
-}
-
-void Engine::Window::CalculateFrameRate(float DeltaTime)
-{
-	static float counter{ 0 };
-	counter += DeltaTime;
-
-	int fps = (int)(1.f / DeltaTime);
-
-	if (counter >= 1.0f)
-	{
-		string fpsStr = std::to_string(static_cast<int>(fps));
-
-		string windowText = m_windowName + " FPS: " + fpsStr;
-		Logger::PrintLog(Logger::PrintType::Display, windowText);
-		counter = 0.0f;
-	}
 }

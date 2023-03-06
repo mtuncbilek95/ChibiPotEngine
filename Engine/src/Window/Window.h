@@ -20,16 +20,18 @@ namespace Engine {
 		Window(const Window&) = delete;
 		//	Move Semantics desturction.
 		Window& operator= (const Window&) = delete;
-		~Window() = default;
+		~Window();
 
 		void InitializeWindow();
-		void ProcessMessage();
+		bool ProcessMessage();
+
+		void SetIsRunning(bool bValue) { bIsRunning = bValue; }
+		bool GetIsRunning() { return bIsRunning; }
 
 		XMINT2 GetWindowSize() { return { m_width,m_height }; }
-		HWND GetWindowHandler() { return m_windowHandle; }
+		HWND GetWindowHandler();
 	protected:
 		static LRESULT APIENTRY WindowProc(HWND windowHandle, UINT message, WPARAM wParam, LPARAM lParam);
-		void CalculateFrameRate(float DeltaTime);
 
 	private:
 		HINSTANCE m_hInstance;
@@ -39,6 +41,8 @@ namespace Engine {
 
 		const string m_className;
 		const string m_windowName;
+
+		bool bIsRunning;
 
 	};
 }

@@ -46,10 +46,9 @@ namespace Engine
         bool Initialize(const HWND handle, int m_width, int m_height);
         /**
          * @brief Runs all the upper system elements frame by frame.
-         * @param DeltaTime the time between two frames in seconds.
          * @return if returns false Window will be aborted without hesitation.
         */
-        bool Update(float DeltaTime);
+        bool Update();
         /**
          * @brief Renders the specified color for the window.
         */
@@ -83,12 +82,8 @@ namespace Engine
         ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
 
         D3D11_VIEWPORT Viewport;
-
-        ShaderObject* Shader;
     private:
-        // TODO: Use single Vertex Shader structure for now, but it will be transform into multiple shader structure.
-        ComPtr<ID3D11VertexShader> m_VertexShader;
-        // TODO: Use single Pixel Shader structure for now, but it will be transform into multiple shader structure.
+
         ComPtr<ID3D11PixelShader> m_PixelShader;
         // TODO: Use single Input Layout structure for now.
         ComPtr<ID3D11InputLayout> m_InputLayout;

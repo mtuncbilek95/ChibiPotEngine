@@ -25,7 +25,7 @@ bool Engine::ShaderObject::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
-	HRESULT hr = graphicsDevice->m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &graphicsDevice->m_VertexShader);
+	HRESULT hr = graphicsDevice->m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_VertexShader);
 
 	if (FAILED(hr))
 	{
@@ -33,7 +33,7 @@ bool Engine::ShaderObject::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
 		return false;
 	}
 
-	graphicsDevice->m_Context->VSSetShader(graphicsDevice->m_VertexShader.Get(), nullptr, 0u);
+	graphicsDevice->m_Context->VSSetShader(m_VertexShader.Get(), nullptr, 0u);
 
 	Logger::PrintLog(Logger::PrintType::Success, "Vertex Shader has been successfully created.");
 
@@ -52,7 +52,7 @@ bool Engine::ShaderObject::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
-	HRESULT hr = graphicsDevice->m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &graphicsDevice->m_PixelShader);
+	HRESULT hr = graphicsDevice->m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader);
 
 	if (FAILED(hr))
 	{
@@ -60,7 +60,7 @@ bool Engine::ShaderObject::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
 		return false;
 	}
 
-	graphicsDevice->m_Context->PSSetShader(graphicsDevice->m_PixelShader.Get(), nullptr, 0u);
+	graphicsDevice->m_Context->PSSetShader(m_PixelShader.Get(), nullptr, 0u);
 
 	Logger::PrintLog(Logger::PrintType::Success, "Pixel Shader has been successfully created.");
 	return true;
@@ -88,3 +88,5 @@ bool Engine::ShaderObject::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 	Logger::PrintLog(Logger::PrintType::Success, "Input Layout has been successfully created.");
 	return true;
 }
+
+

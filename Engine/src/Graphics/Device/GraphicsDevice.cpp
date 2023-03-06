@@ -5,7 +5,7 @@
 
 Engine::GraphicsDevice::GraphicsDevice() : Viewport()
 {
-	Shader = new ShaderObject(this);
+	Logger::PrintLog(Logger::PrintType::Display, "********** Graphics Device **********");
 }
 
 bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_height)
@@ -18,11 +18,6 @@ bool Engine::GraphicsDevice::Initialize(const HWND handle, int m_width, int m_he
 		return false;
 	if (!CreateViewport(m_width, m_height))
 		return false;
-
-	ComPtr<ID3DBlob> Blob;
-	Shader->CompilePixelShader(Blob);
-	Shader->CompileVertexShader(Blob);
-	Shader->CreateInputLayout(Blob);
 
 	return true;
 }
@@ -122,8 +117,6 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success, "DXGI Device is on.");
-
 	// Adapter Creation on DXGI
 	ComPtr<IDXGIAdapter> dxgiAdapter;
 
@@ -135,8 +128,6 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		return false;
 	}
 
-	Logger::PrintLog(Logger::PrintType::Success, "DXGI Adapter is on.");
-
 	// Method Implementation on DXGI
 	ComPtr<IDXGIFactory> dxgiFactory;
 
@@ -147,8 +138,6 @@ bool Engine::GraphicsDevice::CreateSwapChain(const HWND handle)
 		Logger::PrintLog(Logger::PrintType::Error, "Failed to get the DXGI Factory.");
 		return false;
 	}
-
-	Logger::PrintLog(Logger::PrintType::Success, "DXGI Factory is on.");
 
 	// Swapchain creation on DXGI
 	hr = dxgiFactory->CreateSwapChain(m_Device.Get(), &swapChainDesc, &m_Swapchain);
@@ -215,7 +204,7 @@ bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 	}
 }
 
-bool Engine::GraphicsDevice::Update(float DeltaTime)
+bool Engine::GraphicsDevice::Update()
 {
 	ClearFrame();
 	m_Swapchain->Present(1, 0);
