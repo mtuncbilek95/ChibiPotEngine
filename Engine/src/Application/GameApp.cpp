@@ -24,6 +24,7 @@ void GameApp::Run()
 		if (!m_Window->ProcessMessage())
 		{
 			m_Timer->Tick();
+
 			m_GraphicsDevice->Update();
 		}
 	}
