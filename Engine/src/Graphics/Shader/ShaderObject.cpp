@@ -14,18 +14,18 @@ bool Engine::ShaderObject::CompileShader(ComPtr<ID3DBlob>& Blob, string shaderNa
 	return false;
 }
 
-bool Engine::ShaderObject::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CompileVertexShader()
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
 	const string infoVertexShader = Logger::GetShaderData("VertexShader");
 	D3DCompile(infoVertexShader.c_str(), infoVertexShader.length(), nullptr, nullptr, nullptr, "main", "vs_5_0",
-		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+		D3DCOMPILE_ENABLE_STRICTNESS, 0, &m_Blob, &ErrorBlob);
 
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
-	HRESULT hr = graphicsDevice->m_Device->CreateVertexShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_VertexShader);
+	HRESULT hr = graphicsDevice->m_Device->CreateVertexShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_VertexShader);
 
 	if (FAILED(hr))
 	{
@@ -40,19 +40,19 @@ bool Engine::ShaderObject::CompileVertexShader(ComPtr<ID3DBlob>& Blob)
 	return true;
 }
 
-bool Engine::ShaderObject::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CompilePixelShader()
 {
 	ComPtr<ID3DBlob> ErrorBlob;
 
 	const string infoPixelShader = Logger::GetShaderData("PixelShader");
 
 	D3DCompile(infoPixelShader.c_str(), infoPixelShader.length(), nullptr, nullptr, nullptr, "main", "ps_5_0",
-		D3DCOMPILE_ENABLE_STRICTNESS, 0, &Blob, &ErrorBlob);
+		D3DCOMPILE_ENABLE_STRICTNESS, 0, &m_Blob, &ErrorBlob);
 
 	if (ErrorBlob.Get() != nullptr && ErrorBlob->GetBufferPointer() != nullptr)
 		printf("%s", (char*)ErrorBlob->GetBufferPointer());
 
-	HRESULT hr = graphicsDevice->m_Device->CreatePixelShader(Blob->GetBufferPointer(), Blob->GetBufferSize(), nullptr, &m_PixelShader);
+	HRESULT hr = graphicsDevice->m_Device->CreatePixelShader(m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), nullptr, &m_PixelShader);
 
 	if (FAILED(hr))
 	{
@@ -66,7 +66,7 @@ bool Engine::ShaderObject::CompilePixelShader(ComPtr<ID3DBlob>& Blob)
 	return true;
 }
 
-bool Engine::ShaderObject::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
+bool Engine::ShaderObject::CreateInputLayout()
 {
 	const D3D11_INPUT_ELEMENT_DESC inputElementDesc[] =
 	{
@@ -75,7 +75,7 @@ bool Engine::ShaderObject::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 	};
 
 	HRESULT hr = graphicsDevice->m_Device->CreateInputLayout(inputElementDesc, (uint32)std::size(inputElementDesc),
-		Blob->GetBufferPointer(), Blob->GetBufferSize(), &graphicsDevice->m_InputLayout);
+		m_Blob->GetBufferPointer(), m_Blob->GetBufferSize(), &m_InputLayout);
 
 	if (FAILED(hr))
 	{
@@ -83,7 +83,7 @@ bool Engine::ShaderObject::CreateInputLayout(ComPtr<ID3DBlob>& Blob)
 		return false;
 	}
 
-	graphicsDevice->m_Context->IASetInputLayout(graphicsDevice->m_InputLayout.Get());
+	graphicsDevice->m_Context->IASetInputLayout(m_InputLayout.Get());
 
 	Logger::PrintLog(Logger::PrintType::Success, "Input Layout has been successfully created.");
 	return true;

@@ -1,6 +1,7 @@
 #include "GraphicsDevice.h"
 
 #include <Logger/Logger.h>
+
 #include <Graphics/Shader/ShaderObject.h>
 
 Engine::GraphicsDevice::GraphicsDevice() : Viewport()
@@ -206,7 +207,7 @@ bool Engine::GraphicsDevice::CreateViewport(int width, int height)
 
 bool Engine::GraphicsDevice::Update()
 {
-	ClearFrame();
+	ClearFrame(); 
 	m_Swapchain->Present(1, 0);
 	return true;
 }

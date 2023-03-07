@@ -73,6 +73,12 @@ namespace Engine
          * @return if returns false Window will be aborted without hesitation.
         */
         bool CreateRenderTargetView();
+        /**
+         * @brief Creates DirectX Viewport dependent to Window Object
+         * @param width 
+         * @param height 
+         * @return false if window size smaller than 640x480
+        */
         bool CreateViewport(int width, int height);
 
     private:
@@ -82,12 +88,5 @@ namespace Engine
         ComPtr<ID3D11RenderTargetView> m_RenderTargetView;
 
         D3D11_VIEWPORT Viewport;
-    private:
-
-        ComPtr<ID3D11PixelShader> m_PixelShader;
-        // TODO: Use single Input Layout structure for now.
-        ComPtr<ID3D11InputLayout> m_InputLayout;
-        // TODO: Use this in here for now.
-        ComPtr<ID3DBlob> m_Blob;
     };
 }
