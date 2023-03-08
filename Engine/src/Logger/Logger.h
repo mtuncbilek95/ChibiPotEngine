@@ -5,11 +5,14 @@
 #define RED			"\033[0;31m"
 #define GREEN		"\033[0;32m"
 #define YELLOW		"\033[0;33m"
+#define BLUE		"\033[0;34m"
+#define CYAN		"\033[0;36m"
 #define WHITE		"\033[0;37m"
 
 #define CB_Success		"\033[0;32mSuccess: "
 #define CB_Warning		"\033[0;33mWarning: "
 #define CB_Error		"\033[0;31mError: "
+#define CB_Info			"\033[0;36mInfo: "
 #define CB_Display		"\033[0;37mDisplay: "
 
 namespace Logger {
@@ -18,6 +21,7 @@ namespace Logger {
 		Success,
 		Warning,
 		Error,
+		Info,
 		Display
 	};
 
@@ -64,29 +68,35 @@ namespace Logger {
 		return path;
 	}
 
-	static void PrintLog(PrintType type, string message) {
+	template<class... Args>
+	static void PrintLog(PrintType type = PrintType::Display, Args... args) {
+
 		string messageFinal{};
 
 		switch (type)
 		{
 		case PrintType::Success:
-			messageFinal += CB_Success + message + WHITE;
+			messageFinal += CB_Success;
 			break;
 		case PrintType::Warning:
-			messageFinal += CB_Warning + message + WHITE;
+			messageFinal += CB_Warning;
 			break;
 		case PrintType::Error:
-			messageFinal += CB_Error + message + WHITE;
+			messageFinal += CB_Error;
 			break;
 		case PrintType::Display:
-			messageFinal += CB_Display + message + WHITE;
+			messageFinal += CB_Display;
+			break;
+		case PrintType::Info:
+			messageFinal += CB_Info;
 			break;
 		default:
-			messageFinal += WHITE + message + WHITE;
+			messageFinal += WHITE;
 			break;
 		}
 
-		std::cout << messageFinal << std::endl;
+		std::cout << messageFinal << WHITE;
+		(std::cout << ... << args) << std::endl;
 	}
 }
 

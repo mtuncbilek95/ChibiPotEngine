@@ -8,7 +8,6 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/Window/Window.cpp"
 "src/GameTimer/GameTimer.cpp"
 "src/Assets/Model.cpp" 
-"src/ECS/SpriteComponent/SpriteComponent.cpp"
 "src/Graphics/Shader/ShaderObject.cpp"
 "src/Graphics/Device/GraphicsDevice.cpp"
 "src/Application/GameApp.cpp" "src/GameLogic/GameLogic.cpp")
