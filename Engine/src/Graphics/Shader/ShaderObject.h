@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
-
+#include <Core/Types.h>
 
 enum class ShaderType : uint8
 {

@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
+#include <Core/Types.h>
+
 #include <Assets/ModelData.h>
 
 class Model {

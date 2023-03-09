@@ -1,36 +1,23 @@
 #pragma once
 
-#include <ECS/ECSCore.h>
-#include <Math/Vector2.h>
+#include <Core/Types.h>
+
+#include <ECS/EntityCore.h>
 
 class Entity;
 
 class Component {
 public:
-
+	Component() = default;
 	virtual bool Initialize() { return true; }
 	virtual void Update() {}
 	virtual void Draw() {}
-	virtual ~Component() {}
-	
+	virtual ~Component() = default;
+
 	void SetEntity(Entity* value) { entity = value; }
 	Entity* GetEntity() { return entity; }
 private:
 	Entity* entity;
-};
-
-class Transform : Component {
-public:
-	Transform(){}
-	virtual ~Transform(){}
-
-	bool Initialize() override final{
-		Position.
-	}
-
-	CEMath::Vector2<float> Position;
-	CEMath::Vector2<float> Scale;
-	float Rotation;
 };
 
 class Sprite {

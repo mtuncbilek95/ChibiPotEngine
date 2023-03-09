@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/CoreMinimal.h>
+#include <Core/Types.h>
 
 namespace Engine
 {

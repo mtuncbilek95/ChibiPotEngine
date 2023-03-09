@@ -1,8 +1,9 @@
 #pragma once
 
-#include <ECS/ECSCore.h>
 #include <Core/Types.h>
-#include <ECS/ECSBase.h>
+
+#include <ECS/EntityCore.h>
+#include <ECS/EntityBase.h>
 #include <ECS/Component.h>
 
 class Entity {
@@ -14,8 +15,8 @@ public:
 	void Draw() {}
 
 	template<typename T, typename... TArgs>
-	T& AddComponent(TArgs&&... args) {
-		T* component = new T(std::forward<TArgs>(args...));
+	inline T& AddComponent(TArgs&&... args) {
+		T* component(new T(std::forward<TArgs>(args)...));
 
 		std::unique_ptr<Component> cPtr{ component };
 		Components.emplace_back(std::move(cPtr));
@@ -27,13 +28,18 @@ public:
 			return *component;
 		}
 
-		return nullptr;
+		return *static_cast<T*>(nullptr);
 	}
 
 	template<typename T>
 	inline T& GetComponent() const {
-		auto cPtr{ m_ComponentList[GetComponentTypeID<T>()]};
+		auto cPtr{ m_ComponentList[GetComponentTypeID<T>()] };
 		return *cPtr;
+	}
+
+	template<typename T>
+	inline bool HasComponent() const {
+		return m_ComponentBitset[GetComponentTypeID<T>()];
 	}
 private:
 	std::vector<std::unique_ptr<Component>> Components;
