@@ -5,13 +5,13 @@
 
 class TransformComponent : public Component {
 public:
-	TransformComponent() {
+	TransformComponent() : Component() {
 		Position = { 0.0f,0.0f,0.0f };
 		Scale = { 1.0f,1.0f,1.0f };
 		Rotation = 0.0f;
 	}
 
-	TransformComponent(XMFLOAT3 position, XMFLOAT3 scale, float rotation) {
+	TransformComponent(XMFLOAT3 position, XMFLOAT3 scale, float rotation) : Component() {
 		Position = position;
 		Scale = scale;
 		Rotation = rotation;
@@ -19,7 +19,7 @@ public:
 
 	virtual ~TransformComponent() {}
 
-	bool Initialize() override final {}
+	virtual bool Initialize() override final { return Component::Initialize(); }
 
 	XMFLOAT3 Position;
 	XMFLOAT3 Scale;

@@ -10,7 +10,7 @@ add_executable (${PROJECT_NAME} ${RESOURCE} "src/main.cpp"
 "src/Assets/Model.cpp" 
 "src/Graphics/Shader/ShaderObject.cpp"
 "src/Graphics/Device/GraphicsDevice.cpp"
-"src/Application/GameApp.cpp" "src/GameLogic/GameLogic.cpp")
+"src/Application/GameApp.cpp" "src/GameLogic/GameLogic.cpp" "src/ECS/EntityManager.cpp")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_SOURCE_DIR}/Engine/src")
 
@@ -19,4 +19,4 @@ target_link_libraries(${PROJECT_NAME} "d3d11.lib")
 target_link_libraries(${PROJECT_NAME} "dxgi.lib")
 target_link_libraries(${PROJECT_NAME} "d3dcompiler.lib")
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)

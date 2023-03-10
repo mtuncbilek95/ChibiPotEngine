@@ -3,8 +3,7 @@
 #include <Core/Types.h>
 
 #include <ECS/EntityCore.h>
-
-class Entity;
+#include <ECS/Entity.h>
 
 class Component {
 public:

@@ -1,4 +1,4 @@
-#include <Application/GameApp.h>
+//#include <Application/GameApp.h>
 
 #include <ECS/EntityBase.h>
 #include <ECS/Entity.h>
@@ -12,9 +12,11 @@ int main(int argumentC, char** argumentValue) {
 	//Application->Exit();
 
 	Entity* entity = new Entity();
-
-	entity->AddComponent<TransformComponent>(100,100);
-
+	XMFLOAT3 pos = { 100,100,0 };
+	XMFLOAT3 scale = { 1,1,1 };
+	float rot = 0.0f;
+	entity->AddComponent<TransformComponent>(pos,scale,rot);
+	std::cout << std::boolalpha << entity->HasAnyComponent() << std::endl;
 
 	return 0;
 }

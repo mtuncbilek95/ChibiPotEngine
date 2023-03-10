@@ -8,23 +8,36 @@
 
 class Entity {
 public:
-	Entity() {}
-	virtual ~Entity() {}
+	Entity() {
+		for (auto& el : m_ComponentList) {
+			el = nullptr;
+		}
+	}
+	virtual ~Entity() = default;
 
-	void Update() {}
-	void Draw() {}
+	inline void Update() {
+		for (auto& el : m_Components) {
+			el->Update();
+		}
+	}
+
+	inline void Draw() {
+		for (auto& el : m_Components) {
+			el->Draw();
+		}
+	}
 
 	template<typename T, typename... TArgs>
 	inline T& AddComponent(TArgs&&... args) {
-		T* component(new T(std::forward<TArgs>(args)...));
+		T* component = new T(args...);
 
 		std::unique_ptr<Component> cPtr{ component };
-		Components.emplace_back(std::move(cPtr));
+		m_Components.emplace_back(std::move(cPtr));
 
 		if (component->Initialize()) {
 			m_ComponentList[GetComponentTypeID<T>()] = component;
 			m_ComponentBitset[GetComponentTypeID<T>()] = true;
-			component->Entity = this;
+			component->SetEntity(this);
 			return *component;
 		}
 
@@ -41,9 +54,25 @@ public:
 	inline bool HasComponent() const {
 		return m_ComponentBitset[GetComponentTypeID<T>()];
 	}
+
+	inline bool HasAnyComponent() const {
+		return m_ComponentBitset.any();
+	}
+
+	inline bool IsActive() const {
+		return bIsActive;
+	}
+
+	inline void Destroy() {
+		bIsActive = false;
+	}
+
 private:
-	std::vector<std::unique_ptr<Component>> Components;
+	std::vector<std::unique_ptr<Component>> m_Components;
 
 	ComponentArray m_ComponentList;
 	ComponentBitset m_ComponentBitset;
+
+private:
+	bool bIsActive = true;
 };

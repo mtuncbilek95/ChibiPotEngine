@@ -4,6 +4,8 @@
 #include <bitset>
 #include <array>
 #include <vector>
+#include <memory>
+#include <utility>
 
 #include <DirectXMath.h>
 using namespace DirectX;
