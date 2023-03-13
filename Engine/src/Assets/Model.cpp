@@ -209,7 +209,7 @@ void Model::UpdateModel(float DeltaTime)
 {
 	static float counter;
 	counter += DeltaTime;
-
+	 
 	if (counter >= 0.1f) {
 		constantBuffer.tilex > 0.9f ? constantBuffer.tilex = 0.1f : constantBuffer.tilex += 0.1f;
 
