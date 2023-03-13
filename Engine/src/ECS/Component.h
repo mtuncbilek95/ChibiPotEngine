@@ -18,11 +18,3 @@ public:
 private:
 	Entity* entity;
 };
-
-class Sprite {
-	uint32 textureID;
-	uint32 textureWidth;
-	uint32 textureHeight;
-	uint32 spriteWidth;
-	uint32 spriteHeight;
-};

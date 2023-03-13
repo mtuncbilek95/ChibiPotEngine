@@ -1,6 +1,8 @@
 #include "GameApp.h"
 
-GameApp::GameApp(int width, int height) : m_GraphicsDevice(nullptr), m_Window(nullptr), m_Timer(nullptr)
+#include <Logger/Logger.h>
+
+GameApp::GameApp(int width, int height) : m_GraphicsDevice(nullptr), m_Window(nullptr), m_Timer(nullptr), m_GameManager(nullptr)
 {
 	m_Window = new Engine::Window(width, height);
 
@@ -24,7 +26,7 @@ void GameApp::Run()
 		if (!m_Window->ProcessMessage())
 		{
 			m_Timer->Tick();
-
+			m_GameManager->Update(m_Timer->DeltaTime());
 			m_GraphicsDevice->Update();
 		}
 	}

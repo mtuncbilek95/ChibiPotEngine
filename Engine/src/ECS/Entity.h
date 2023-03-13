@@ -35,8 +35,8 @@ public:
 		m_Components.emplace_back(std::move(cPtr));
 
 		if (component->Initialize()) {
-			m_ComponentList[GetComponentTypeID<T>()] = component;
-			m_ComponentBitset[GetComponentTypeID<T>()] = true;
+			m_ComponentList[EntityBase::GetComponentTypeID<T>()] = component;
+			m_ComponentBitset[EntityBase::GetComponentTypeID<T>()] = true;
 			component->SetEntity(this);
 			return *component;
 		}
@@ -46,13 +46,13 @@ public:
 
 	template<typename T>
 	inline T& GetComponent() const {
-		auto cPtr{ m_ComponentList[GetComponentTypeID<T>()] };
+		auto cPtr{ m_ComponentList[EntityBase::GetComponentTypeID<T>()] };
 		return *cPtr;
 	}
 
 	template<typename T>
 	inline bool HasComponent() const {
-		return m_ComponentBitset[GetComponentTypeID<T>()];
+		return m_ComponentBitset[EntityBase::GetComponentTypeID<T>()];
 	}
 
 	inline bool HasAnyComponent() const {

@@ -1,8 +1,9 @@
 #include "GameLogic.h"
 
-Engine::GameLogic::GameLogic()
-{
-	
+#include <ECS/EntityManager.h>
+
+Engine::GameLogic::GameLogic() : m_Scene(nullptr)
+{	
 }
 
 Engine::GameLogic::~GameLogic()

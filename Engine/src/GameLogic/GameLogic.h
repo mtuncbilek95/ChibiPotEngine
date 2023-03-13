@@ -1,5 +1,7 @@
 #pragma once
 
+class EntityManager;
+
 namespace Engine {
 
 	class GameLogic {
@@ -12,5 +14,8 @@ namespace Engine {
 		void Start();
 		void Update(float DeltaTime);
 		void Stop();
+
+	private:
+		EntityManager* m_Scene;
 	};
 }

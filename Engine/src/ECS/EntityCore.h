@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <unordered_map>
 
 #include <DirectXMath.h>
 using namespace DirectX;

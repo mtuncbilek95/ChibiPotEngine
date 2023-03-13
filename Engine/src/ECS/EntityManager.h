@@ -16,6 +16,7 @@ public:
 	void AddEntity(Entity* newEntity);
 	void RemoveEntity(Entity* targetEntity);
 	Entity* DuplicateEntity(Entity* targetEntity);
+	int GetTotalEntities() { return m_Entities.size(); }
 private:
-	std::vector<std::unique_ptr<Entity>> m_Entities;
+	std::vector<Entity*> m_Entities;
 };

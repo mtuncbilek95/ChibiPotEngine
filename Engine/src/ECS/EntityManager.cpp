@@ -18,8 +18,7 @@ void EntityManager::Refresh()
 
 void EntityManager::AddEntity(Entity* newEntity)
 {
-	std::unique_ptr<Entity> e_Ptr{ newEntity };
-	m_Entities.push_back(e_Ptr);
+	m_Entities.push_back(newEntity);
 }
 
 void EntityManager::RemoveEntity(Entity* targetEntity)

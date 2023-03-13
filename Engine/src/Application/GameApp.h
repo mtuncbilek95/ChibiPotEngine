@@ -24,6 +24,8 @@ public:
 	void Exit();
 
 private:
+	void CalculateDeltaTime(float DeltaTime);
+private:
 	Engine::GraphicsDevice* m_GraphicsDevice;
 	Engine::Window* m_Window;
 	Engine::GameLogic* m_GameManager;
