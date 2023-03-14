@@ -34,6 +34,8 @@ namespace Engine
     class GraphicsDevice
     {
         friend class ShaderObject;
+        friend class TextureObject;
+
     public:
         /**
          * @brief Construct a new Graphics Program object
